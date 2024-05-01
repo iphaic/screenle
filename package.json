@@ -1,0 +1,32 @@
+{
+  "name": "screenle",
+  "version": "1.0.0",
+  "description": "A web game where you try to guess the daily movie",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iphaic/screenle.git"
+  },
+  "keywords": [
+    "movie",
+    "guessing",
+    "game",
+    "trivia",
+    "film",
+    "database",
+    "io",
+    "screenle"
+  ],
+  "author": "phaic",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/iphaic/screenle/issues"
+  },
+  "homepage": "https://github.com/iphaic/screenle#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
