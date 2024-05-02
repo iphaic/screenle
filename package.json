@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/iphaic/screenle#readme",
   "dependencies": {
+    "csv-parser": "^3.0.0",
     "express": "^4.19.2"
   }
 }

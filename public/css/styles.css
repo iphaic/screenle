@@ -1,0 +1,145 @@
+/* General Body Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2c3e50, #4b6cb7); /* Dark gray gradient */
+    color: #fff; /* White text for better visibility on dark background */
+}
+
+/* Container for centering the content */
+.container {
+    position: relative;
+    width: 90%;
+    min-width: 400px;
+    max-width: 600px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly transparent black for the inner container */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Header styles */
+header h1 {
+    color: #f39c12; /* A bright accent color */
+}
+
+/* Main section styles */
+main {
+    margin-top: 10px;
+}
+
+#guessSection {
+    position: relative; /* Set the parent's position to relative */
+    width: 80%; /* Adjust the width as necessary */
+    margin: auto; /* Center the section if needed */
+}
+
+/* Input and buttons styles */
+#guessInput, #guessButton {
+    width: 100%;
+    padding: 12px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+#guessInput {
+    width: 100%; /* Make input take full width of its parent */
+    padding: 10px;
+    font-size: 1em;
+}
+
+#guessButton {
+    background-color: #3498db; /* Blue button */
+    color: white;
+    cursor: pointer;
+}
+
+#guessButton:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+}
+
+.guess-count {
+    position: absolute;
+    top: 20px;  /* Increase to see if it appears */
+    right: 20px;  /* Increase if it is hidden behind some other element */
+    color: #aa3155;  /* Make sure this color is visible against the background */
+    font-size: 16px;
+    z-index: 200;  /* Increase z-index to ensure it's not behind other elements */
+}
+
+.victory-count {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    color: #47a53b;
+    font-size: 16px;
+    z-index: 100;
+}
+
+.feedback {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /* Full-width to spread across the container */
+    margin-top: 20px; /* Space from the guess section */
+}
+
+.dev-info {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    color: #333;
+    z-index: 1000; /* Ensures it's above other content */
+}
+
+.info-box {
+    flex-grow: 1; /* Grow to fill the space evenly */
+    margin: 0 10px; /* Space between boxes */
+    padding: 10px;
+    background-color: #3f4752cc; /* Default color, will change based on feedback */
+    text-align: center;
+    border-radius: 5px;
+}
+
+/* Suggestions box styling */
+.suggestions {
+    position: absolute;
+    top: 100%; /* Position directly below the input box */
+    left: 0;
+    right: 0;
+    background-color: #323555;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 1px solid #ccc;
+    z-index: 1000;
+    display: none; /* Initially hidden */
+}
+
+.suggestions div {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.suggestions div:last-child {
+    border-bottom: none;
+}
+
+.suggestions div:hover {
+    background-color: #2c3e50;
+}
+
+/* Footer styles */
+footer {
+    margin-top: 20px;
+    font-size: 0.8em;
+}

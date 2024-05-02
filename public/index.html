@@ -1,23 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Screenle.io Game</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>play screenle</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<div class="container">
-    <h1 id="title">screenle.io</h1>
-    <div class="info-boxes">
-        <div class="info-box" id="director">Director</div>
-        <div class="info-box" id="year">Year</div>
-        <div class="info-box" id="genre">Genre</div>
-        <div class="info-box" id="criticRating">Critic Rating</div>
-        <div class="info-box" id="userRating">User Rating</div>
+    <div class="container">
+        <!-- Development Tool: Display Randomly Selected Movie -->
+        <div id="devSelectedMovie" class="dev-info"></div>
+        <div id="guessCount" class="guess-count">Guesses: 0/10</div>
+        <div id="victoryCount" class="victory-count">Victories: 0</div>
+        <header>
+            <h1>screenle.lol</h1>
+            <p>A movie guessing game</p>
+        </header>
+        <main>
+            <div id="gameInfo">
+                <p>Guess the mystery movie chosen from the current top 1000 highest grossing movies</p>
+            </div>
+            <div id="guessSection">
+                <input type="text" id="guessInput" placeholder="Enter movie title here">
+                <div id="suggestions" class="suggestions"></div>
+                <button id="guessButton">Guess</button>
+            </div>
+            <div id="feedback" class="feedback">
+                <div class="info-box" id="yearFeedback">Year</div>
+                <div class="info-box" id="genreFeedback">Genre</div>
+                <div class="info-box" id="directorFeedback">Director</div>
+                <div class="info-box" id="certificateFeedback">Age Rating</div>
+                <div class="info-box" id="durationFeedback">Duration</div>
+            </div>
+        </main>
+        <footer>
+            <p>created by phaic</p>
+        </footer>
     </div>
-    <input type="text" id="guessInput" placeholder="Enter here">
-</div>
-<script src="app.js"></script>
+    <script src="js/cookies.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/victory.js"></script>
 </body>
 </html>
