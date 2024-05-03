@@ -1,4 +1,4 @@
-// Function to get a cookie value by name
+// function to get a cookie value by name
 function getCookie(name) {
     let cookieArray = document.cookie.split(';');
     for (let cookie of cookieArray) {
@@ -8,7 +8,6 @@ function getCookie(name) {
     return null;
 }
 
-// Function to set a cookie
 function setCookie(name, value, days) {
     let expires = "";
     if (days) {
@@ -19,24 +18,20 @@ function setCookie(name, value, days) {
     document.cookie = `${name}=${encodeURIComponent(value)}${expires}; path=/`;
 }
 
-// Update the victories in the UI
 function updateVictoriesDisplay() {
     let victories = parseInt(getCookie('victories')) || 0;
     document.getElementById('victoryCount').textContent = `Victories: ${victories}`;
 }
 
-// Increment the victory count
 function incrementVictories() {
     let victories = parseInt(getCookie('victories')) || 0;
     victories++;
-    setCookie('victories', victories, 365 * 10); // Store for a long time
+    setCookie('victories', victories, 365 * 50);
     updateVictoriesDisplay();
 }
 
-// Load victories on page load and update the display
 function loadVictories() {
     updateVictoriesDisplay();
 }
 
-// Call loadVictories when the window loads
 window.onload = loadVictories;

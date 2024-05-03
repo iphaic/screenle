@@ -1,0 +1,9 @@
+[Game]
+Make history appear after each guess
+If website is left then come back, your most recent guess should be there
+Victories dont update
+If you run out of guesses then you should get red game over text along with the correct movie
+If you guess correct the movie the same thing that happens when game over happens except it says Victory!
+
+[Server]
+Ensure that the mystery movie updates at midnight and the players cookies get reset too (except victories)

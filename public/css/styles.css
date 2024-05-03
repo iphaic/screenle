@@ -78,7 +78,7 @@ main {
     position: absolute;
     bottom: 10px;
     right: 10px;
-    color: #47a53b;
+    color: #3a9e50;
     font-size: 16px;
     z-index: 100;
 }
@@ -136,6 +136,12 @@ main {
 
 .suggestions div:hover {
     background-color: #2c3e50;
+}
+
+.game-message {
+    color: #09ad84; /* Red text color for visibility */
+    margin: 10px 0; /* Spacing for better layout */
+    font-size: 16px; /* Appropriate font size */
 }
 
 /* Footer styles */

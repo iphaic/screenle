@@ -1,5 +1,7 @@
 let movies = [];
 let selectedMovie;
+let today = new Date();
+let dayOfYearToday = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
 
 const COLOR_CORRECT = 'rgba(0, 173, 43, 1)';
 const COLOR_PARTIAL = 'rgba(194, 155, 51, 1)';
@@ -12,7 +14,7 @@ function loadMovies() {
             movies = data;
             console.log('Movies loaded:', movies);
             if (movies.length > 0) {
-                selectRandomMovie();
+                selectMovieOfDay();
             } else {
                 console.log('No movies available in the dataset');
             }
@@ -23,14 +25,25 @@ function loadMovies() {
         });
 }
 
-function selectRandomMovie() {
+function selectMovieOfDay() {
+    let today = new Date(); // Get the current date and time
+    let dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+
     if (movies.length > 0) {
-        selectedMovie = movies[Math.floor(Math.random() * movies.length)];
-        console.log('Selected movie:', selectedMovie);
+        selectedMovie = movies[dayOfYear % movies.length];
         document.getElementById('devSelectedMovie').textContent = `Dev: ${selectedMovie['Movie Title'] || 'No title found'}`;
     } else {
-        console.log('No movies to select');
         document.getElementById('devSelectedMovie').textContent = 'Dev: No movies loaded';
+    }
+    checkIfAlreadyWonToday();
+}
+
+function checkIfAlreadyWonToday() {
+    let lastVictoryDay = parseInt(getCookie('lastVictoryDay')) || 0;
+    if (lastVictoryDay === dayOfYearToday) {
+        gameOver();
+        disableGuessing();
+        updateGameMessage(`You've already won today! Come back tomorrow and play again!`);
     }
 }
 
@@ -40,21 +53,25 @@ function updateGuessCountDisplay() {
 }
 
 window.onload = function() {
-    loadMovies();  // Existing function to load movies
-    updateGuessCountDisplay();  // Update the guess count display
+    loadMovies();
+    updateGuessCountDisplay();
 };
 
 document.getElementById('guessButton').addEventListener('click', function() {
-    const userInput = document.getElementById('guessInput').value;
-    if (!checkGuessLimit()) return; // Stop if guess limit reached
+    const userInput = document.getElementById('guessInput').value.trim().toLowerCase();  // normalize input
+    if (!checkGuessLimit()) return; // stop if guess limit reached
     
-    const movie = movies.find(movie => movie['Movie Title'].toLowerCase() === userInput.toLowerCase());
+    const movie = movies.find(movie => movie['Movie Title'].toLowerCase() === userInput);
     
     if (movie) {
         updateFeedback(movie);
         displayMovieDetails(movie);
+        if (movie['Movie Title'].toLowerCase() === selectedMovie['Movie Title'].toLowerCase()) {
+            document.getElementById('gameMessage').textContent = `You got it! ${movie['Movie Title']}.`;
+            recordVictory();
+        }
     } else {
-        alert('Please select a valid movie from the suggestions.');
+        document.getElementById('gameMessage').textContent = "Invalid Movie Title!";
     }
 });
 
@@ -63,39 +80,63 @@ function checkGuess(guess) {
     if (movie) {
         updateFeedback(movie);
     } else {
-        alert('Please select a valid movie from the suggestions.');
+        document.getElementById('gameMessage').textContent = "Invalid Movie Title!";
     }
 }
 
 function checkGuessLimit() {
     let guesses = parseInt(getCookie('guesses')) || 0;
-    if (guesses >= 10) {
-        alert("Game Over! You have reached your guessing limit for today.");
-        document.getElementById('guessCount').textContent = `Guesses: 10/10`;
+    if (guesses > 9) {
+        updateGameMessage("Game Over! You have reached your guessing limit for today.");
+        disableGuessing();
+        document.getElementById('guessCount').textContent = `Guesses: ${guesses}/10`; // show max guesses reached
         return false;
     } else {
         guesses++;
-        console.log("Guesses updated to:", guesses);
-        setCookie('guesses', guesses, 1);  // Reset the cookie to expire in 1 day
-        document.getElementById('guessCount').textContent = `Guesses: ${guesses}/10`;
+        setCookie('guesses', guesses, 1); // reset the cookie to expire in 1 day
+        document.getElementById('guessCount').textContent = `Guesses: ${guesses}/10`; // update the guess count displayed
         return true;
     }
 }
 
+function disableGuessing() {
+    document.getElementById('guessInput').disabled = true;
+    document.getElementById('guessButton').disabled = true;
+    document.getElementById('gameMessage').textContent += " Come back tomorrow and play again!";
+}
+
+function recordVictory() {
+    incrementVictories();
+    setCookie('lastVictoryDay', dayOfYearToday, 1);
+    updateVictoryCountDisplay();
+    disableGuessing();
+    updateGameMessage(`Nice! You've correctly guessed the movie: ${selectedMovie['Movie Title']}.\nCome back tomorrow and play again!`);
+}
+
+// function to check and display victories
+function checkVictory() {
+    let victories = parseInt(getCookie('victories')) || 0;
+    document.getElementById('victoryCount').textContent = `Victories: ${victories}`;
+    if (victories > 0) {
+        disableGuessing();
+    }
+}
+
+// check input
 document.getElementById('guessInput').addEventListener('input', function() {
     const input = this.value;
-    console.log('Input received:', input);  // Debugging to see if input is being captured
+    console.log('Input received:', input);  // log inputs
     displaySuggestions(input);
 });
 
 function displaySuggestions(input) {
     const suggestionsBox = document.getElementById('suggestions');
-    suggestionsBox.innerHTML = ''; // Clear previous suggestions
-    suggestionsBox.style.display = 'none'; // Hide initially
+    suggestionsBox.innerHTML = ''; // clear previous suggestions
+    suggestionsBox.style.display = 'none'; // invis initially
 
-    if (input.length >= 3) {
+    if (input.length >= 2) {
         const filteredMovies = movies.filter(movie => movie['Movie Title'].toLowerCase().includes(input.toLowerCase()));
-        console.log('Filtered movies:', filteredMovies);  // Check what's being filtered
+        console.log('Filtered movies:', filteredMovies);  // check what is filtered
 
         if (filteredMovies.length > 0) {
             filteredMovies.forEach(movie => {
@@ -103,11 +144,11 @@ function displaySuggestions(input) {
                 div.textContent = movie['Movie Title'];
                 div.onclick = () => {
                     document.getElementById('guessInput').value = movie['Movie Title'];
-                    suggestionsBox.style.display = 'none'; // Hide after selection
+                    suggestionsBox.style.display = 'none'; // hide after selection
                 };
                 suggestionsBox.appendChild(div);
             });
-            suggestionsBox.style.display = 'block'; // Show suggestions
+            suggestionsBox.style.display = 'block'; // show suggestions
         }
     }
 }
@@ -124,10 +165,16 @@ function updateFeedback(guess) {
     const yearDifference = Math.abs(selectedMovie['Year of Release'] - guess['Year of Release']);
     document.getElementById('yearFeedback').style.backgroundColor = yearDifference === 0 ? COLOR_CORRECT : yearDifference <= 5 ? COLOR_PARTIAL : COLOR_WRONG;
 
-    const selectedGenres = selectedMovie['Genre'].split(', ');
-    const guessGenres = guess['Genre'].split(', ');
+    // split genres and trim whitespace
+    const selectedGenres = selectedMovie['Genre'].split(',').map(genre => genre.trim());
+    const guessGenres = guess['Genre'].split(',').map(genre => genre.trim());
+
+    // check if any genre matches
     const genreMatch = guessGenres.some(genre => selectedGenres.includes(genre));
-    const allGenresMatch = selectedGenres.length === guessGenres.length && genreMatch;
+    // check if all genres match in any order
+    const allGenresMatch = guessGenres.length === selectedGenres.length && guessGenres.every(genre => selectedGenres.includes(genre));
+
+    // update the genre feedback color based on matches
     document.getElementById('genreFeedback').style.backgroundColor = allGenresMatch ? COLOR_CORRECT : genreMatch ? COLOR_PARTIAL : COLOR_WRONG;
 
     document.getElementById('directorFeedback').style.backgroundColor = selectedMovie['Director'] === guess['Director'] ? COLOR_CORRECT : COLOR_WRONG;
@@ -137,34 +184,18 @@ function updateFeedback(guess) {
     document.getElementById('durationFeedback').style.backgroundColor = durationDifference === 0 ? COLOR_CORRECT : durationDifference <= 15 ? COLOR_PARTIAL : COLOR_WRONG;
 }
 
-function evaluateYear(year) {
-    const diff = Math.abs(selectedMovie.year - year);
-    return diff === 0 ? 'green' : diff <= 5 ? 'yellow' : 'gray';
-}
-
-function evaluateGenre(genre) {
-    const selectedGenres = selectedMovie['Genre'].split(', ');
-    const inputGenres = genre.split(', ');
-    const match = inputGenres.some(genre => selectedGenres.includes(genre));
-    const allMatch = inputGenres.every(genre => selectedGenres.includes(genre)) && selectedGenres.length === inputGenres.length;
-    return allMatch ? 'green' : match ? 'yellow' : 'gray';
-}
-
-function evaluateDuration(duration) {
-    const diff = Math.abs(selectedMovie.duration - duration);
-    return diff === 0 ? 'green' : diff <= 15 ? 'yellow' : 'gray';
-}
-
 function gameOver() {
-    alert("Game Over! The correct movie was: " + selectedMovie['Movie Title']);
+    document.getElementById('gameMessage').textContent = "Game Over! You've already won today. The movie was: " + selectedMovie['Movie Title'];
+    disableGuessing();
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    loadMovies();
-    updateGuessCountDisplay();
-});
+function updateVictoryCountDisplay() {
+    let victories = parseInt(getCookie('victories')) || 0;
+    document.getElementById('victoryCount').textContent = `Victories: ${victories}`;
+}
 
-window.addEventListener('load', function() {
+window.onload = function() {
     loadMovies();
     updateGuessCountDisplay();
-});
+    updateVictoryCountDisplay();
+};
