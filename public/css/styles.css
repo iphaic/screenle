@@ -267,18 +267,42 @@ footer {
     display: block; /* Changed from none to block */
     position: fixed;
     top: 50%;
-    left: 50%;
+    left: 50.325%;
     transform: translate(-50%, -50%);
     width: 100%;
-    max-width: 600px;
-    background: linear-gradient(to right, #5b216d, #331852);
-    color: white;
+    max-width: 700px;
+    background: linear-gradient(to right, #ffffff, #4b4b4b);
+    color: rgb(0, 0, 0);
     padding: 10px;
     border-radius: 10px;
     z-index: 1001;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s, visibility 0.5s; /* Smooth transition for opacity and visibility */
+    font-size: 20px;
+}
+
+.how-to-play-content h4 + p {
+    margin-top: 0px;
+}
+
+.how-to-play-content h4 {
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.highlight-orange {
+    background-color: rgba(243, 156, 18, 1);
+    color: #fff;
+    padding: 0 1px;
+    border-radius: 8px;
+}
+
+.highlight-green {
+    background-color: rgba(0, 173, 43, 1);
+    color: #fff; /* White text for better readability */
+    padding: 0 1px; /* Adds some padding around the text */
+    border-radius: 8px; /* Optional: adds rounded corners to the highlight */
 }
 
 .close-btn {

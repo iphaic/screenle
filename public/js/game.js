@@ -130,7 +130,7 @@ document.getElementById('guessButton').addEventListener('click', function() {
         } else {
             let guesses = parseInt(getCookie('guesses')) || 0;
             if (guesses > 10) {  // Check if this guess was the 10th
-                updateGameMessage("Game Over! ");
+                updateGameMessage("Game Over! The movie was: " + selectedMovie['Movie Title'] + ". Come back tomorrow and try again!");
                 disableGuessing();
             }
         }
@@ -172,7 +172,7 @@ function checkGuessLimit() {
 function checkGuessLimitOnLoad() {
     let guesses = parseInt(getCookie('guesses')) || 1;
     if (guesses > 10) {
-        updateGameMessage('Game Over! You have reached your guessing limit for today.\nCome back tomorrow and play again!');
+        updateGameMessage('Game Over! You have reached your guessing limit for today. Come back tomorrow and play again!');
         disableGuessing();
         document.getElementById('guessCount').textContent = `Guess: ${guesses}/10`; // show max guesses reached
         return false;
@@ -182,7 +182,6 @@ function checkGuessLimitOnLoad() {
 function disableGuessing() {
     document.getElementById('guessInput').disabled = true;
     document.getElementById('guessButton').disabled = true;
-    document.getElementById('gameMessage').textContent += "Come back tomorrow and play again!";
 }
 
 function recordVictory() {

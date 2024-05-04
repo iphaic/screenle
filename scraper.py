@@ -41,7 +41,12 @@ while len(movie_name) < 999:
         runtime = store.p.find('span', class_ = 'runtime').text.replace(' min', '')
         duration.append(runtime)
         
-        genre_type = store.p.find('span', class_ = 'genre').text.strip()
+        # Transform genre data
+        genre_type = store.p.find('span', class_='genre').text.strip()
+        if "Music" in genre_type:
+            genre_type = genre_type.replace("Music", "Musical")
+        if "History" in genre_type or "Biography" in genre_type:
+            genre_type = genre_type.replace("History", "Documentary").replace("Biography", "Documentary")
         genre.append(genre_type)
         
         rate = store.find('div', class_='ipl-rating-star').text.strip()

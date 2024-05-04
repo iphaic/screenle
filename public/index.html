@@ -12,12 +12,23 @@
         <div class="how-to-play-content">
             <button id="closeHowToPlay" class="close-btn">×</button>
             <h2>How to Play</h2>
-            <p>Guess the mystery movie chosen from the current top 1000 highest grossing movies.</p>
-            <!-- Add more instructions as needed -->
+            <p>Your goal is to guess the mystery movie chosen from the current top 1000 highest grossing movies within 10 tries</p>
+            <h3>Guessing</h3>
+            <p>When you submit a guess, you will notice you get some feedback. This will show you what matches the mystery movie from your guess</p>
+            <h3>Feedback System</h3>
+            <h4>Year</h4>
+            <p>This will highlight in <span class="highlight-orange">ORANGE</span> if it is within 5 years of the mystery movie's release date</p>
+            <h4>Genre</h4>
+            <p>This will highlight in <span class="highlight-orange">ORANGE</span> if at least 1 of the genres match with the mystery movie. Any genres that match exactly will highlight in <span class="highlight-green">GREEN</span>. The available genres are: Action, Adventure, Animation, Fantasy, Drama, Romance, Sci-Fi, Thriller, Horror, Crime, Comedy, Family, Biography, Musical, Mystery, Western, Documentary, and Sport</p>
+            <h4>Director</h4>
+            <p>This will highlight in <span class="highlight-green">GREEN</span> if it matches. Some films have several directors, this will just be displayed as "Multiple Directors"</p>
+            <h4>Age Rating</h4>
+            <p>This will highlight in <span class="highlight-green">GREEN</span> if it matches. The available age ratings are: PG, PG-13, R, TV-MA, Passed, and Not Rated</p>
+            <h4>Duration</h4>
+            <p>This will highlight in <span class="highlight-orange">ORANGE</span> if it is within 15 minutes of the mystery movie's duration</p>
         </div>
     </div>
     <div class="container">
-        <!-- Development Tool: Display Randomly Selected Movie -->
         <div id="devSelectedMovie" class="dev-info"></div>
         <button id="howToPlayButton" class="how-to-play-btn">How to Play</button>
         <button id="toggleSound" class="toggle-sound-btn">Sound Enabled</button>
@@ -25,11 +36,10 @@
         <div id="victoryCount" class="victory-count">Victories: 0</div>
         <header>
             <h1>screenle.lol</h1>
-            <p>A movie guessing game</p>
+            <p>The movie guessing game</p>
         </header>
         <main>
             <div id="gameInfo">
-                <p>Guess the mystery movie chosen from the current top 1000 highest grossing movies</p>
                 <div id="gameMessage" class="game-message"></div>
             </div>
             <div id="guessSection">
@@ -46,7 +56,7 @@
             </div>
         </main>
         <footer>
-            <p>created by phaic</p>
+            <p>created by phaic | designed by shelby</p>
         </footer>
     </div>
     <div id="guessHistoryContainer" class="guess-history"></div>
