@@ -1,26 +1,30 @@
 /* General Body Styles */
 body, html {
     margin: 0;
-    padding: 0;
+    padding-bottom: 50px;
     font-family: 'Arial', sans-serif;
+    width: 100vw;
     height: 100vh;
+    min-height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #2c3e50, #4b6cb7); /* Dark gray gradient */
+    overflow-x: hidden;
+    flex-direction: column; /* Changed to column to stack items vertically */
+    align-items: center; /* Centers items horizontally */
+    justify-content: center; /* Center the content vertically */
+    background: linear-gradient(to right, #234466, #1c2b5f);
     color: #fff; /* White text for better visibility on dark background */
+    overflow-y: auto;
 }
 
 /* Container for centering the content */
 .container {
     position: relative;
-    width: 90%;
+    width: 100%;
     min-width: 400px;
     max-width: 600px;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.6); /* Slightly transparent black for the inner container */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: rgba(0, 0, 0, 0.3); /* Slightly transparent black for the inner container */
+    border-radius: 20px; /* Rounded corners */
 }
 
 /* Header styles */
@@ -76,11 +80,11 @@ main {
 
 .victory-count {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    top: 40px;
+    right: 20px;
     color: #3a9e50;
     font-size: 16px;
-    z-index: 100;
+    z-index: 200;
 }
 
 .feedback {
@@ -99,7 +103,7 @@ main {
     border-radius: 5px;
     font-size: 0.8em;
     color: #333;
-    z-index: 1000; /* Ensures it's above other content */
+    z-index: 200; /* Ensures it's above other content */
 }
 
 .info-box {
@@ -108,19 +112,20 @@ main {
     padding: 10px;
     background-color: #3f4752cc; /* Default color, will change based on feedback */
     text-align: center;
-    border-radius: 5px;
+    border-radius: 20px;
 }
 
 /* Suggestions box styling */
 .suggestions {
     position: absolute;
-    top: 100%; /* Position directly below the input box */
+    top: 110%; /* Position directly below the input box */
     left: 0;
     right: 0;
     background-color: #323555;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     border: 1px solid #ccc;
     z-index: 1000;
+    border-radius: 15px;
     display: none; /* Initially hidden */
 }
 
@@ -148,4 +153,30 @@ main {
 footer {
     margin-top: 20px;
     font-size: 0.8em;
+}
+
+/* Guess history styles */
+.guess-history {
+    position: absolute; /* Position it relative to the nearest positioned ancestor (body) */
+    top: 70vh; /* Start directly below the viewport */
+    width: 90%;
+    max-width: 600px;
+    max-height: 200vh;
+    padding: 20px;
+    margin: 0 auto; /* Center it horizontally */
+}
+
+.guess-history div {
+    background: #585e6e;  /* Light background for each guess */
+    border: 1px solid #ddd;  /* Border around each guess */
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 15px;  /* Space between each history entry */
+}
+
+.info-box {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 2px 5px;
+    border-radius: 20px;
 }

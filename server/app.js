@@ -1,3 +1,4 @@
+// app.js
 const express = require('express');
 const fs = require('fs');
 const csv = require('csv-parser');
@@ -11,31 +12,32 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use(cookieParser());
 
 // Load movie data at startup and prepare for API and cron
-let movieData = [];  // This will store your movie data
-
+let movieData = [];
 function loadMovies() {
-    fs.createReadStream(path.join(__dirname, '..', 'data', 'imdb_top_films.csv'))
-        .pipe(csv())
-        .on('data', (data) => movieData.push(data))
-        .on('end', () => {
-            console.log('Movies loaded:', movieData.length);
-            serverGame.setMovies(movieData);  // Pass the loaded movies to server_game
-        });
+    const filePath = path.join(__dirname, '..', 'data', 'imdb_top_films.csv');
+    
+    if (fs.existsSync(filePath)) {
+        const tempMovieData = [];
+        fs.createReadStream(filePath)
+            .pipe(csv())
+            .on('data', (data) => tempMovieData.push(data))
+            .on('end', () => {
+                console.log('Movies loaded:', tempMovieData.length);
+                serverGame.setMovies(tempMovieData);  // Now calling setMovies here
+            });
+    } else {
+        console.error('File not found:', filePath);
+    }
 }
 
 loadMovies();
 
 // Read movie data
 app.get('/api/movies', (req, res) => {
-    const results = [];
-    fs.createReadStream(path.join(__dirname, '..', 'data', 'imdb_top_films.csv'))
-        .pipe(csv())
-        .on('data', (data) => results.push(data))
-        .on('end', () => {
-            res.json(results);
-            movies = results;
-            serverGame.selectMovieOfDay();
-        });
+    res.json({
+        movies: serverGame.getMovies(),
+        selectedMovie: serverGame.getSelectedMovie()
+    });
 });
 
 // Cron job to reset game data and select new movie at midnight EST
@@ -51,9 +53,8 @@ cron.schedule('0 0 * * *', () => {
 
 function resetGame() {
     console.log("Resetting game data and selecting new movie...");
-    selectMovieOfDay();
-    console.log(`New movie selected: ${app.locals.selectedMovie}`);
-    app.locals.guesses = {};
+    loadMovies();
+    serverGame.selectMovieOfDay();
     console.log('Guesses have been reset for all users');
 }
 
