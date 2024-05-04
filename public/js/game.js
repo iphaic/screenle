@@ -130,7 +130,7 @@ document.getElementById('guessButton').addEventListener('click', function() {
         } else {
             let guesses = parseInt(getCookie('guesses')) || 0;
             if (guesses > 10) {  // Check if this guess was the 10th
-                updateGameMessage("Game Over! Try again tomorrow!");
+                updateGameMessage("Game Over! ");
                 disableGuessing();
             }
         }
