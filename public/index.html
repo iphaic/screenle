@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,18 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <div id="howToPlayContainer" class="how-to-play-container">
+        <div class="how-to-play-content">
+            <button id="closeHowToPlay" class="close-btn">×</button>
+            <h2>How to Play</h2>
+            <p>Guess the mystery movie chosen from the current top 1000 highest grossing movies.</p>
+            <!-- Add more instructions as needed -->
+        </div>
+    </div>
     <div class="container">
         <!-- Development Tool: Display Randomly Selected Movie -->
         <div id="devSelectedMovie" class="dev-info"></div>
+        <button id="howToPlayButton" class="how-to-play-btn">How to Play</button>
         <div id="guessCount" class="guess-count">Guesses: 0/10</div>
         <div id="victoryCount" class="victory-count">Victories: 0</div>
         <header>
@@ -42,5 +52,6 @@
     <script src="js/cookies.js"></script>
     <script src="js/victory.js"></script>
     <script src="js/game.js"></script>
+    <script src="js/how_to_play.js"></script>
 </body>
 </html>

@@ -12,7 +12,6 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use(cookieParser());
 
 // Load movie data at startup and prepare for API and cron
-let movieData = [];
 function loadMovies() {
     const filePath = path.join(__dirname, '..', 'data', 'imdb_top_films.csv');
     
@@ -55,10 +54,36 @@ function resetGame() {
     console.log("Resetting game data and selecting new movie...");
     loadMovies();
     serverGame.selectMovieOfDay();
-    console.log('Guesses have been reset for all users');
+    const resetTime = new Date();
+    fs.writeFileSync(path.join(__dirname, 'resetTime.json'), JSON.stringify({ lastReset: resetTime }));
+    console.log('Game data has been reset');
+}
+
+app.get('/api/last-reset-time', (req, res) => {
+    const resetTimePath = path.join(__dirname, 'resetTime.json');
+    if (fs.existsSync(resetTimePath)) {
+        res.sendFile(resetTimePath);
+    } else {
+        res.status(404).send('Reset time not found');
+    }
+});
+
+const resetTimePath = path.join(__dirname, 'resetTime.json');
+
+// Function to initialize the reset time
+function initializeResetTime() {
+    if (!fs.existsSync(resetTimePath)) {
+        const resetTime = new Date();
+        fs.writeFileSync(resetTimePath, JSON.stringify({ lastReset: resetTime }));
+        console.log('\x1b[36m%s\x1b[0m','Initial reset time set at:', resetTime.toISOString());
+    } else {
+        const storedResetData = JSON.parse(fs.readFileSync(resetTimePath, 'utf8'));
+        console.log('\x1b[36m%s\x1b[0m','Existing reset time found:', storedResetData.lastReset);
+    }
 }
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log('\x1b[32m',`Server running on port ${PORT}`);
+    initializeResetTime();
 });

@@ -29,7 +29,7 @@ function selectMovieOfDay() {
         // Use the pseudo-random number modulo the number of movies to select a movie
         const index = Math.floor(rng() * movies.length);
         selectedMovie = movies[index];
-        console.log(`Movie of the day selected with seed '${seed}': ${selectedMovie['Movie Title'] || 'No title found'} - ${today.toLocaleString()}`);
+        console.log(`Movie of the day selected with seed '${seed}': \x1b[36m${selectedMovie['Movie Title'] || 'No title found'}\x1b[0m - ${today.toLocaleString()}`);
     } else {
         console.log('No movies to select');
     }

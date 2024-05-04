@@ -2,7 +2,7 @@
 body, html {
     margin: 0;
     padding-bottom: 50px;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Lato', sans-serif;
     width: 100vw;
     height: 100vh;
     min-height: 100%;
@@ -11,7 +11,7 @@ body, html {
     flex-direction: column; /* Changed to column to stack items vertically */
     align-items: center; /* Centers items horizontally */
     justify-content: center; /* Center the content vertically */
-    background: linear-gradient(to right, #234466, #1c2b5f);
+    background: linear-gradient(to right, #602366, #b33e3e);
     color: #fff; /* White text for better visibility on dark background */
     overflow-y: auto;
 }
@@ -23,13 +23,16 @@ body, html {
     min-width: 400px;
     max-width: 600px;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.3); /* Slightly transparent black for the inner container */
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly transparent black for the inner container */
     border-radius: 20px; /* Rounded corners */
 }
 
 /* Header styles */
 header h1 {
-    color: #f39c12; /* A bright accent color */
+    color: #09c5d3; /* A bright accent color */
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 48px;
+    font-weight: bold;
 }
 
 /* Main section styles */
@@ -60,20 +63,20 @@ main {
 }
 
 #guessButton {
-    background-color: #3498db; /* Blue button */
+    background-color: #4893c5; /* Blue button */
     color: white;
     cursor: pointer;
 }
 
 #guessButton:hover {
-    background-color: #2980b9; /* Darker blue on hover */
+    background-color: #2b6992; /* Darker blue on hover */
 }
 
 .guess-count {
     position: absolute;
     top: 20px;  /* Increase to see if it appears */
     right: 20px;  /* Increase if it is hidden behind some other element */
-    color: #aa3155;  /* Make sure this color is visible against the background */
+    color: #5db6ff;  /* Make sure this color is visible against the background */
     font-size: 16px;
     z-index: 200;  /* Increase z-index to ensure it's not behind other elements */
 }
@@ -112,7 +115,7 @@ main {
     padding: 10px;
     background-color: #3f4752cc; /* Default color, will change based on feedback */
     text-align: center;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 /* Suggestions box styling */
@@ -178,5 +181,52 @@ footer {
     display: inline-block;
     margin-right: 5px;
     padding: 2px 5px;
-    border-radius: 20px;
+    border-radius: 5px;
+}
+
+.how-to-play-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px; /* Adjust based on your layout */
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.how-to-play-btn:hover {
+    background-color: #2c71a0;
+}
+
+.how-to-play-container {
+    display: block; /* Changed from none to block */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 600px;
+    background: linear-gradient(to right, #9135ad, #592a8f);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s, visibility 0.5s; /* Smooth transition for opacity and visibility */
+}
+
+.close-btn {
+    float: right;
+    border: none;
+    background: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #e74c3c;
 }
