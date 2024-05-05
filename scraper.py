@@ -82,9 +82,26 @@ while len(movie_name) < 999:
     else:
         break
 
+# Handling duplicates: Append the year to the movie title if there are duplicates
+from collections import Counter
+
+# First, we count the occurrences of each movie name
+name_counts = Counter(movie_name)
+
+# Adjusted titles list
+adjusted_titles = []
+
+# Append the year to the title if it appears more than once in the list
+for name, rel_year in zip(movie_name, year):
+    if name_counts[name] > 1:
+        adjusted_name = f"{name} ({rel_year})"
+    else:
+        adjusted_name = name
+    adjusted_titles.append(adjusted_name)
+
 # Create a DataFrame with the collected data
 movie_DF = pd.DataFrame({
-    'Movie Title': movie_name, 
+    'Movie Title': adjusted_titles,
     'Year of Release': year,
     'Genre': genre,
     'Movie Rating': rating,
@@ -97,6 +114,6 @@ movie_DF = pd.DataFrame({
 })
 
 # Export to CSV
-movie_DF.to_csv('imdb_top_films.csv', index=False)
+movie_DF.to_csv('data/imdb_top_films.csv', index=False)
 
 print("Data collection complete. CSV file has been created.")

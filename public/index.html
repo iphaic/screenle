@@ -19,7 +19,8 @@
             <h4>Year</h4>
             <p>This will highlight in <span class="highlight-orange">ORANGE</span> if it is within 5 years of the mystery movie's release date</p>
             <h4>Genre</h4>
-            <p>This will highlight in <span class="highlight-orange">ORANGE</span> if at least 1 of the genres match with the mystery movie. Any genres that match exactly will highlight in <span class="highlight-green">GREEN</span>. The available genres are: Action, Adventure, Animation, Fantasy, Drama, Romance, Sci-Fi, Thriller, Horror, Crime, Comedy, History, Family, Biography, Musical, Mystery, Western, Documentary, and Sport</p>
+            <p>This will highlight in <span class="highlight-orange">ORANGE</span> if at least 1 of the genres match with the mystery movie. Any genres that match exactly will highlight in <span class="highlight-green">GREEN</span>.</p>
+            <p>The available genres are: Action, Adventure, Animation, Fantasy, Drama, Romance, Sci-Fi, Thriller, Horror, Crime, Comedy, History, Family, Musical, Mystery, Western, Documentary, and Sport</p>
             <h4>Director</h4>
             <p>This will highlight in <span class="highlight-green">GREEN</span> if it matches. Some films have several directors, this will just be displayed as "Multiple Directors"</p>
             <h4>Age Rating</h4>
@@ -28,15 +29,46 @@
             <p>This will highlight in <span class="highlight-orange">ORANGE</span> if it is within 15 minutes of the mystery movie's duration</p>
         </div>
     </div>
+    <div id="victoryContainer" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeVictoryModal()">&times;</span>
+            <h1><span id="victoryMovieTitle"></span></h1>
+            <h2>Nicely done!</h2>
+            <h3>Share with your friends that you got today's movie in <span id="guessCountDisplay"></span></h3>
+            <p id="genericShareButton" class="share-btn" onclick="handleGenericShare()">
+                <img src="images/copy.png" alt="Copy Link">
+            </p>
+            <a id="shareOnTwitter" class="share-btn" href="#" target="_blank" >
+                <img src="images/twitter.png" alt="Share on X">
+            </a>
+            <a id="shareOnFacebook" class="share-btn" href="#" target="_blank">
+                <img src="images/facebook.png" alt="Share on Facebook">
+            </a>
+            <style>
+                .share-btn {
+                    display: inline-block;
+                    width: 50px; /* Adjust the width of the box */
+                    height: 50px; /* Adjust the height of the box */
+                    overflow: hidden; /* Hide any overflow */
+                }
+                
+                .share-btn img {
+                    max-width: 100%; /* Ensure the image doesn't exceed the box width */
+                    max-height: 100%; /* Ensure the image doesn't exceed the box height */
+                }
+            </style>
+        </div>
+    </div>
     <div class="container">
         <div id="devSelectedMovie" class="dev-info"></div>
         <button id="howToPlayButton" class="how-to-play-btn">How to Play</button>
         <button id="toggleSound" class="toggle-sound-btn">Sound Enabled</button>
-        <div id="guessCount" class="guess-count">Guesses: 0/10</div>
+        <button id="createCustomGameButton" class="custom-game-btn">Create Custom Game</button>
+        <div id="guessCount" class="guess-count">Guess: 1/10</div>
         <div id="victoryCount" class="victory-count">Victories: 0</div>
         <header>
             <h1>screenle.lol</h1>
-            <p>The movie guessing game</p>
+            <h2>The movie guessing game</h2>
         </header>
         <main>
             <div id="gameInfo">
@@ -64,7 +96,9 @@
     <script src="js/toggle_sound.js"></script>
     <script src="js/cookies.js"></script>
     <script src="js/victory.js"></script>
+    <script src="js/share.js"></script>
     <script src="js/game.js"></script>
+    <script src="js/create_custom.js"></script>
     <script src="js/how_to_play.js"></script>
 </body>
 </html>

@@ -19,12 +19,19 @@ const COLOR_CORRECT = 'rgba(0, 173, 43, 1)';
 const COLOR_PARTIAL = 'rgba(243, 156, 18, 1)';
 const COLOR_WRONG = 'rgba(63, 71, 82, 1)';
 
+let isCustomGame = false;
+
 function loadMovies() {
     fetch('/api/movies')
         .then(response => response.json())
         .then(data => {
             movies = data.movies;
-            selectedMovie = data.selectedMovie;
+            checkForCustomGame();
+            if (!isCustomGame)
+                {
+                    console.log("isCustomGame is false");
+                    selectedMovie = data.selectedMovie; 
+                }
 
             if (selectedMovie) {
                 document.getElementById('devSelectedMovie').textContent = `Dev: ${selectedMovie['Movie Title']}`;
@@ -111,6 +118,12 @@ function displayGuessHistory() {
 }
 
 document.getElementById('guessButton').addEventListener('click', function() {
+
+    if (isCustomGameCreationMode) {
+        share_custom_game();
+        return;
+    }
+
     document.getElementById('gameMessage').textContent = "";  // Clear previous messages
     const userInput = document.getElementById('guessInput').value.trim().toLowerCase();  // Normalize input
     const movie = movies.find(movie => movie['Movie Title'].toLowerCase() === userInput);
@@ -130,7 +143,7 @@ document.getElementById('guessButton').addEventListener('click', function() {
         } else {
             let guesses = parseInt(getCookie('guesses')) || 0;
             if (guesses > 10) {  // Check if this guess was the 10th
-                updateGameMessage("Game Over! The movie was: " + selectedMovie['Movie Title'] + ". Come back tomorrow and try again!");
+                updateGameMessage("Game Over! The movie was " + selectedMovie['Movie Title'] + ". Come back tomorrow and try again!");
                 disableGuessing();
             }
         }
@@ -157,24 +170,27 @@ function checkGuess(guess) {
 }
 
 function checkGuessLimit() {
-    let guesses = parseInt(getCookie('guesses')) || 1;
-    if (guesses > 10) {  // If 10 guesses have already been made, prevent further guessing.
+    let cookieName = isCustomGame ? 'customGame_guesses' : 'guesses';
+    let guesses = parseInt(getCookie(cookieName)) || 0;
+    if (guesses >= 10) {
         updateGameMessage("Game Over! You have reached your guessing limit for today.");
         disableGuessing();
         return false;
+    } else {
+        guesses++;
+        setCookie(cookieName, guesses, 1); // Save the updated count in a cookie.
+        document.getElementById('guessCount').textContent = `Guess: ${guesses}/10`;
+        return true;
     }
-    guesses++;  // Increment the guess count since the guess is about to be processed.
-    setCookie('guesses', guesses, 1); // Save the updated count in a cookie.
-    document.getElementById('guessCount').textContent = `Guess: ${guesses}/10`; // Update the display.
-    return true;
 }
 
 function checkGuessLimitOnLoad() {
-    let guesses = parseInt(getCookie('guesses')) || 1;
-    if (guesses > 10) {
+    let cookieName = isCustomGame ? 'customGame_guesses' : 'guesses';
+    let guesses = parseInt(getCookie(cookieName)) || 0;
+    if (guesses >= 10) {
         updateGameMessage('Game Over! You have reached your guessing limit for today. Come back tomorrow and play again!');
         disableGuessing();
-        document.getElementById('guessCount').textContent = `Guess: ${guesses}/10`; // show max guesses reached
+        document.getElementById('guessCount').textContent = `Guess: ${guesses}/10`; // Show max guesses reached
         return false;
     }
 }
@@ -191,11 +207,29 @@ function recordVictory() {
         spread: 270,
         shapes: ['square','square','star']
       });
-    incrementVictories();
-    setCookie('lastVictoryDay', dayOfYearToday, 1);
+    if (!isCustomGame)
+    {
+        incrementVictories();
+        setCookie('lastVictoryDay', dayOfYearToday, 1);
+    }
     updateVictoryCountDisplay();
     disableGuessing();
     updateGameMessage(`Nice! You've correctly guessed the movie: ${selectedMovie['Movie Title']}.\nCome back tomorrow and play again!`);
+
+    document.getElementById('victoryMovieTitle').textContent = selectedMovie['Movie Title'];
+    document.getElementById('victoryContainer').style.display = 'block';
+
+    showVictoryModal(selectedMovie['Movie Title']);
+
+    // display the victory popup with animation
+    const victoryModal = document.getElementById('victoryContainer');
+    victoryModal.style.display = 'block';
+    victoryModal.style.opacity = '1';
+    victoryModal.style.animation = 'slideUpFadeIn 2.0s ease-out forwards';
+}
+
+function closeVictoryModal() {
+    document.getElementById('victoryContainer').style.display = 'none'; // Hide the victory modal
 }
 
 // function to check and display victories
@@ -314,7 +348,7 @@ function updateFeedback(guess) {
 
 function gameOver() {
     if (selectedMovie && selectedMovie['Movie Title']) {
-        document.getElementById('gameMessage').textContent = "Game Over! You've already won today. The movie was: " + selectedMovie['Movie Title'];
+        document.getElementById('gameMessage').textContent = "Game Over! You've already won today. The movie was " + selectedMovie['Movie Title'];
     } else {
         document.getElementById('gameMessage').textContent = "Game Over! You've already won today! Come back tomorrow and play again!";
     }
@@ -328,7 +362,7 @@ function updateVictoryCountDisplay() {
 
 function checkAndClearData() 
 {
-    localStorage.clear();
+    clearLocalStorageExceptLastResetTime();
     const cookiesToDelete = ['guesses', 'lastVictoryDay'];
     document.cookie.split(';').forEach(cookie => {
         let [name, value] = cookie.split('=');
@@ -339,11 +373,43 @@ function checkAndClearData()
     });
 }
 
+function setupGameWithCustomMovie(title) {
+    // Attempt to find the movie by title in the loaded movie list
+    const movie = movies.find(movie => movie['Movie Title'].toLowerCase() === title.toLowerCase());
+    if (movie) {
+        selectedMovie = movie;  // Set the custom game movie
+        console.log("Custom game setup with movie:", movie['Movie Title']);
+        isCustomGame = true;
+    } else {
+        console.error("Movie not found:", title);
+    }
+}
+
+function clearLocalStorageExceptLastResetTime() {
+    const lastResetTime = localStorage.getItem('lastResetTime');
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key !== 'lastResetTime') {
+            localStorage.removeItem(key);
+        }
+    }
+
+    // Set back the lastResetTime
+    if (lastResetTime) {
+        localStorage.setItem('lastResetTime', lastResetTime);
+    }
+}
+
 window.onload = function() {
     console.log("Window loaded successfully.");
-    fetch('/api/last-reset-time')
-        .then(response => response.json())
+        fetch('/api/last-reset-time')
+        .then(response => {
+            console.log("Response received");
+            return response.json();
+        })
         .then(data => {
+            console.log("Data parsed", data)
             const serverResetTime = new Date(data.lastReset);
             const lastClientResetTime = new Date(localStorage.getItem('lastResetTime'));
 
@@ -355,13 +421,14 @@ window.onload = function() {
                 checkAndClearData();
                 localStorage.setItem('lastResetTime', serverResetTime.toISOString());
             }
-
+            
             loadMovies();
             updateGuessCountDisplay();
             displayGuessHistory();
             checkGuessLimitOnLoad();
             updateVictoryCountDisplay();
             checkIfAlreadyWonToday();
+            updateShareLinks();
         })
         .catch(error => {
             console.error('Error fetching last reset time:', error);

@@ -10,7 +10,6 @@
     }
   }
 
-/* General Body Styles */
 body, html {
     margin: 0;
     padding-bottom: 50px;
@@ -23,22 +22,22 @@ body, html {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #1d5253, #412255, #602366, #09c5d3);
+    background: linear-gradient(120deg, #345858, #252525, #2f1c46, #161616);
     background-size: 800% 800%;
-    animation: gradientBG 60s ease infinite;
+    animation: gradientBG 120s ease infinite;
     color: #fff;
     overflow-y: auto;
 }
 
-/* Container for centering the content */
+/* container for centering the content */
 .container {
     position: relative;
     width: 100%;
     min-width: 400px;
     max-width: 600px;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.6); /* Slightly transparent black for the inner container */
-    border-radius: 20px; /* Rounded corners */
+    background-color: rgba(0, 0, 0, 0.0);
+    border-radius: 20px;
 }
 
 @keyframes gradient-scroll {
@@ -50,13 +49,13 @@ body, html {
     }
   }
 
-/* Header styles */
+/* header styles */
 header h1 {
-    color: #fff; /* Ensures the text is visible on the gradient */
+    color: #fff;
     font-family: Verdana, Geneva, sans-serif;
     font-size: 48px;
     font-weight: bold;
-    background: linear-gradient(to right, #09c5d3, #602366, #b33e3e, #09c5d3);
+    background: linear-gradient(to right, #09c5d3, #9c39a5, #d84b4b, #09c5d3);
     background-size: 1500% 100%;
     background-clip: text;
     -webkit-background-clip: text;
@@ -65,20 +64,20 @@ header h1 {
 }
 
 header {
-    display: block; /* Makes the header a block-level element */
-    width: 100%; /* Ensures it stretches across the screen */
-    text-align: center; /* Centers the text */
+    display: block;
+    width: 100%;
+    text-align: center;
 }
 
-/* Main section styles */
+/* main section styles */
 main {
     margin-top: 10px;
 }
 
 #guessSection {
-    position: relative; /* Set the parent's position to relative */
-    width: 80%; /* Adjust the width as necessary */
-    margin: auto; /* Center the section if needed */
+    position: relative;
+    width: 80%;
+    margin: auto;
 }
 
 /* Input and buttons styles */
@@ -92,28 +91,28 @@ main {
 }
 
 #guessInput {
-    width: 100%; /* Make input take full width of its parent */
+    width: 100%;
     padding: 10px;
     font-size: 1em;
 }
 
 #guessButton {
-    background-color: #4893c5; /* Blue button */
+    background-color: #4893c5;
     color: white;
     cursor: pointer;
 }
 
 #guessButton:hover {
-    background-color: #2b6992; /* Darker blue on hover */
+    background-color: #2b6992;
 }
 
 .guess-count {
     position: absolute;
-    top: 20px;  /* Increase to see if it appears */
-    right: 20px;  /* Increase if it is hidden behind some other element */
-    color: #5db6ff;  /* Make sure this color is visible against the background */
+    top: 20px;
+    right: 20px;
+    color: #5db6ff;
     font-size: 16px;
-    z-index: 200;  /* Increase z-index to ensure it's not behind other elements */
+    z-index: 200;
 }
 
 .victory-count {
@@ -128,8 +127,8 @@ main {
 .feedback {
     display: flex;
     justify-content: space-between;
-    width: 100%; /* Full-width to spread across the container */
-    margin-top: 20px; /* Space from the guess section */
+    width: 100%;
+    margin-top: 20px;
 }
 
 .dev-info {
@@ -141,22 +140,21 @@ main {
     border-radius: 5px;
     font-size: 0.8em;
     color: #333;
-    z-index: 200; /* Ensures it's above other content */
+    z-index: 200;
 }
 
 .info-box {
-    flex-grow: 1; /* Grow to fill the space evenly */
-    margin: 0 10px; /* Space between boxes */
+    flex-grow: 1; /* grow to fill the space evenly */
+    margin: 0 10px;
     padding: 10px;
-    background-color: #3f4752cc; /* Default color, will change based on feedback */
+    background-color: #3f4752cc;
     text-align: center;
     border-radius: 10px;
 }
 
-/* Suggestions box styling */
 .suggestions {
     position: absolute;
-    top: 110%; /* Position directly below the input box */
+    top: 110%;
     left: 0;
     right: 0;
     background-color: #323555;
@@ -164,7 +162,7 @@ main {
     border: 1px solid #ccc;
     z-index: 1000;
     border-radius: 15px;
-    display: none; /* Initially hidden */
+    display: none; /* initially hidden */
 }
 
 .suggestions div {
@@ -183,34 +181,36 @@ main {
 }
 
 .game-message {
-    color: #09ad84; /* Red text color for visibility */
-    margin: 10px 0; /* Spacing for better layout */
-    font-size: 16px; /* Appropriate font size */
+    color: #09ad84;
+    margin: 10px 0;
+    font-size: 16px;
+    text-align: center;
 }
 
-/* Footer styles */
 footer {
     margin-top: 20px;
     font-size: 0.8em;
+    text-align: left;
 }
 
-/* Guess history styles */
+/* guess history styles */
 .guess-history {
-    position: absolute; /* Position it relative to the nearest positioned ancestor (body) */
-    top: 70vh; /* Start directly below the viewport */
+    position: absolute;
+    top: 70vh;
     width: 90%;
     max-width: 600px;
     max-height: 200vh;
     padding: 20px;
-    margin: 0 auto; /* Center it horizontally */
+    margin: 0 auto;
 }
 
 .guess-history div {
-    background: #585e6e;  /* Light background for each guess */
-    border: 1px solid #ddd;  /* Border around each guess */
+    color: #e7e7e7;
+    background: #5c6170;
+    border: 4px solid #000000;
     padding: 10px;
-    border-radius: 10px;
-    margin-top: 15px;  /* Space between each history entry */
+    border-radius: 40px;
+    margin-top: 15px;
 }
 
 @keyframes slideFadeIn {
@@ -229,15 +229,16 @@ footer {
     transition: opacity 0.25s ease-in-out;
 }
 
-/* Fade-in animation for each guess history entry */
+/* fade in animation for each guess history entry */
 .guess-history-entry {
-    opacity: 0; /* Start fully transparent */
-    animation: slideFadeIn 1s ease-in-out forwards; /* 'forwards' keeps the state at the end of the animation */
+    opacity: 0; /* start fully transparent */
+    animation: slideFadeIn 1s ease-in-out forwards;
+    font-size: 20px;
 }
 
-/* Active class to trigger animation */
+
 .guess-history-entry.active {
-    opacity: 1; /* Fully visible */
+    opacity: 1;
 }
 
 .info-box {
@@ -250,7 +251,7 @@ footer {
 .how-to-play-btn {
     position: fixed;
     top: 10px;
-    left: 10px; /* Adjust based on your layout */
+    left: 10px;
     background-color: #3498db;
     color: white;
     border: none;
@@ -264,21 +265,21 @@ footer {
 }
 
 .how-to-play-container {
-    display: block; /* Changed from none to block */
+    display: block;
     position: fixed;
     top: 50%;
     left: 50.325%;
     transform: translate(-50%, -50%);
     width: 100%;
     max-width: 700px;
-    background: linear-gradient(to right, #ffffff, #4b4b4b);
-    color: rgb(0, 0, 0);
+    background-color: rgb(49, 49, 49);
+    color: rgb(224, 224, 224);
     padding: 10px;
     border-radius: 10px;
-    z-index: 1001;
+    z-index: 500;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.5s, visibility 0.5s; /* Smooth transition for opacity and visibility */
+    transition: opacity 0.5s, visibility 0.5s;
     font-size: 20px;
 }
 
@@ -300,9 +301,9 @@ footer {
 
 .highlight-green {
     background-color: rgba(0, 173, 43, 1);
-    color: #fff; /* White text for better readability */
-    padding: 0 1px; /* Adds some padding around the text */
-    border-radius: 8px; /* Optional: adds rounded corners to the highlight */
+    color: #fff;
+    padding: 0 1px;
+    border-radius: 8px;
 }
 
 .close-btn {
@@ -321,11 +322,122 @@ footer {
 .toggle-sound-btn {
     position: fixed;
     top: 50px;
-    left: 10px; /* Adjust based on your layout */
+    left: 10px;
     background-color: #000000;
     color: white;
     border: none;
     padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
+}
+
+@keyframes slideUpFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(200px); /* Adjust the starting position for the slide effect */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes modalGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.modal {
+    position: fixed;
+    width: 90%;
+    max-width: 500px;
+    background: linear-gradient(135deg, #1d5253, #412255, #602366, #09c5d3);
+    background-size: 800% 800%;
+    animation: modalGradient 10s ease infinite;
+    color: white;
+    padding: 16px;
+    border-radius: 12px;
+    z-index: 1000;
+    display: none;
+    opacity: 0;
+    border: 3px solid #09c5d3;
+}
+
+.modal-content {
+    position: relative;
+    padding: 20px;
+    text-align: center;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* General styles for social share buttons */
+.share-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+/* Generic button styling */
+#genericShareButton {
+    background-color: #39c4a1;
+}
+
+#genericShareButton:hover {
+    background-color: #288870;
+}
+
+/* Twitter button styling */
+#shareOnTwitter {
+    background-color: #2c2c2c; /* Twitter's brand color */
+}
+
+#shareOnTwitter:hover {
+    background-color: #111111; /* Darker shade for hover state */
+}
+
+/* Facebook button styling */
+#shareOnFacebook {
+    background-color: #4267B2; /* Facebook's brand color */
+}
+
+#shareOnFacebook:hover {
+    background-color: #2f4d85; /* Darker shade for hover state */
+}
+
+.custom-game-btn {
+    position: fixed;
+    top: 90px;
+    left: 10px;
+    background-color: #9354b8;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.custom-game-btn:hover {
+    background-color: rgb(95, 31, 114);
 }

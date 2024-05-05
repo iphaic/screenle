@@ -20,20 +20,6 @@ function getCookie(name) {
     return null;
 }
 
-
-function checkGuessLimit() {
-    let guesses = parseInt(getCookie('guesses')) || 0;
-    if (guesses >= 10) {
-        document.getElementById('gameMessage').textContent = "Game Over!";
-        disableGuessing();
-        return false;
-    } else {
-        guesses++;
-        setCookie('guesses', guesses, 1); // reset the cookie to expire in 1 day
-        return true;
-    }
-}
-
 function resetGuessesAtMidnightEST() {
     let now = new Date();
     let est = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
