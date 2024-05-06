@@ -68,16 +68,14 @@ function displayCustomGameLink(link) {
 
 function clearData() 
 {
-    console.log("Starting clearData for custom game")
     clearLocalStorageExceptLastResetTime();
-    console.log("Cleared local storage...")
-    const cookiesToDelete = ['customGame_guesses'];
+    const cookiesToDelete = ['guesses'];
     document.cookie.split(';').forEach(cookie => {
         let [name, value] = cookie.split('=');
         name = name.trim();
         if (cookiesToDelete.includes(name)) {
             document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
-            console.log("Cleared guess cookies...");
+            console.log("Deleted guesses cookies for custom game");
         }
     });
 }

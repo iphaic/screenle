@@ -35,7 +35,7 @@ function loadMovies() {
                 }
 
             if (selectedMovie) {
-                // document.getElementById('devSelectedMovie').textContent = `Dev: ${selectedMovie['Movie Title']}`;
+                document.getElementById('devSelectedMovie').textContent = `Dev: ${selectedMovie['Movie Title']}`;
             } else {
                 document.getElementById('devSelectedMovie').textContent = 'No movie selected';
             }
