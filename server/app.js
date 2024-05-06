@@ -82,6 +82,29 @@ function initializeResetTime() {
     }
 }
 
+// Basic Authentication Middleware
+function basicAuth(req, res, next) {
+    const auth = { login: 'admin', password: 'secret' }  // Set login and password
+
+    const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+    const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
+
+    // Verify login and password are set and correct
+    if (login && password && login === auth.login && password === auth.password) {
+        return next(); // Access granted
+    }
+
+    // Access denied
+    res.set('WWW-Authenticate', 'Basic realm="401"'); // Change this as you want.
+    res.status(401).send('Authentication required.'); // Custom message
+}
+
+// Route to protect
+app.get('/data/imdb_top_films.csv', basicAuth, (req, res) => {
+    // You can modify the path according to where you store your files
+    res.sendFile(`${__dirname}/path_to_your_files/imdb_top_films.csv`);
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log('\x1b[32m',`Server running on port ${PORT}`);

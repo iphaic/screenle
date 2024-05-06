@@ -4,7 +4,7 @@ let isCustomGameCreationMode = false;
 function setupCustomGameButton() {
     const customGameButton = document.getElementById('createCustomGameButton');
     customGameButton.addEventListener('click', function() {
-        isCustomGameCreationMode = !isCustomGameCreationMode;  // Toggle the mode
+        isCustomGameCreationMode = !isCustomGameCreationMode;
         if (isCustomGameCreationMode) {
             prepareCustomGameUI();
         } else {
@@ -14,14 +14,12 @@ function setupCustomGameButton() {
 }
 
 function prepareCustomGameUI() {
-    // Hide unnecessary UI components
     document.getElementById('victoryContainer').style.display = 'none';
     document.getElementById('howToPlayContainer').style.display = 'none';
 
-    // Change UI elements for custom game creation
     document.getElementById('gameMessage').textContent = "Select a movie for your friend to guess!";
-    document.getElementById('guessButton').textContent = "Create Link";
-    document.getElementById('guessButton').onclick = createCustomGameLink; // Assign new function to the guess button
+    document.getElementById('guessButton').textContent = "CREATE LINK";
+    document.getElementById('guessButton').onclick = createCustomGameLink;
     document.getElementById('guessInput').placeholder = "Enter movie title for custom game";
 
     document.getElementById('guessInput').disabled = false;
@@ -31,7 +29,6 @@ function prepareCustomGameUI() {
 function createCustomGameLink() {
     const movieTitle = document.getElementById('guessInput').value.trim();
     if (!movieTitle) {
-        alert("Please enter a movie title.");
         return;
     }
 
@@ -47,7 +44,7 @@ function createCustomGameLink() {
 }
 
 function encodeMovieTitle(title) {
-    return btoa(title); // Base64 encoding
+    return btoa(title);
 }
 
 function generateCustomGameLink(encodedTitle) {
@@ -56,9 +53,17 @@ function generateCustomGameLink(encodedTitle) {
 }
 
 function displayCustomGameLink(link) {
-    const linkDisplay = document.createElement('div');
-    linkDisplay.innerHTML = `Your custom game link: <a href="${link}" target="_blank">${link}</a>`;
-    document.body.appendChild(linkDisplay);
+    let linkContainer = document.getElementById('customGameContainer');
+
+    // check if the container already exists, if not create it
+    if (!linkContainer) {
+        linkContainer = document.createElement('div');
+        linkContainer.id = 'customGameContainer';
+        document.body.appendChild(linkContainer);
+    }
+
+    // clear previous content and set new link
+    linkContainer.innerHTML = `Your custom game link: <a href="${link}" target="_blank">${link}</a>`;
 }
 
 function clearData() 
@@ -70,6 +75,7 @@ function clearData()
         name = name.trim();
         if (cookiesToDelete.includes(name)) {
             document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+            console.log("Deleted guesses cookies for custom game");
         }
     });
 }
@@ -90,9 +96,11 @@ function checkForCustomGame() {
                 
                 isCustomGame = true;
                 clearData();
+                updateGuessCountDisplay();
+                displayGuessHistory();
                 document.getElementById('guessInput').disabled = false;
                 document.getElementById('guessButton').disabled = false;
-                updateGameMessage(``);
+                updateGameMessage(`Custom Game Loaded. Good Luck!`);
 
             } else {
                 console.log("Movie not found for custom game:", decodedMovieTitle);
@@ -117,7 +125,7 @@ function decodeMovieTitle(encodedTitle) {
 function setupGameWithCustomMovie(title) {
     const movie = movies.find(movie => movie['Movie Title'].toLowerCase() === title.toLowerCase());
     if (movie) {
-        selectedMovie = movie; // Set the custom game movie
+        selectedMovie = movie;
         document.getElementById('devSelectedMovie').textContent = `Custom Game for: ${movie['Movie Title']}`;
     } else {
         console.log("Movie not found for custom game.");
@@ -126,5 +134,4 @@ function setupGameWithCustomMovie(title) {
 
 document.addEventListener('DOMContentLoaded', function() {
     setupCustomGameButton();
-    checkForCustomGame();
 });

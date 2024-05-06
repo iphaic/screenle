@@ -20,6 +20,7 @@ const COLOR_PARTIAL = 'rgba(243, 156, 18, 1)';
 const COLOR_WRONG = 'rgba(63, 71, 82, 1)';
 
 let isCustomGame = false;
+let alreadyLost = false;
 
 function loadMovies() {
     fetch('/api/movies')
@@ -46,7 +47,7 @@ function loadMovies() {
 }
 
 function checkIfAlreadyWonToday() {
-    let lastVictoryDay = parseInt(getCookie('lastVictoryDay')) || 0;
+    let lastVictoryDay = parseInt(getCookie('lastVictoryDay')) || -1;
     console.log('Last Victory Day:', lastVictoryDay, 'Day of Year Today:', dayOfYearToday);
     if (lastVictoryDay === dayOfYearToday) {
         console.log('User has already won today.');
@@ -55,6 +56,18 @@ function checkIfAlreadyWonToday() {
         updateGameMessage(`You've already won today! Come back tomorrow and play again!`);
     } else {
         console.log('No win recorded today. Last win was on day:', lastVictoryDay);
+    }
+}
+
+function checkIfAlreadyLostToday() {
+    let lastLoseDay = parseInt(getCookie('lastLoseDay')) || -1;
+    console.log('Last Lose Day:', lastLoseDay, 'Day of Year Today:', dayOfYearToday);
+    if (lastLoseDay === dayOfYearToday) {
+        console.log('User has already lost today.');
+        alreadyLost = true;
+        updateGameMessage(`You've already played today! Come back tomorrow and play again!`);
+    } else {
+        console.log('No lose recorded today. Last lose was on day:', lastLoseDay);
     }
 }
 
@@ -69,7 +82,7 @@ function storeGuessHistory(guess) {
         title: guess['Movie Title'],
         feedback: {
             year: document.getElementById('yearFeedback').textContent,
-            genre: document.getElementById('genreFeedback').innerHTML,  // Save HTML content
+            genre: document.getElementById('genreFeedback').innerHTML,
             director: document.getElementById('directorFeedback').textContent,
             certificate: document.getElementById('certificateFeedback').textContent,
             duration: document.getElementById('durationFeedback').textContent,
@@ -91,19 +104,17 @@ function displayGuessHistory() {
     const historyContainer = document.getElementById('guessHistoryContainer');
     let guessHistory = JSON.parse(localStorage.getItem('guessHistory') || '[]');
 
-    // First, fade out the existing content
+    guessHistory = guessHistory.slice(-10);
+
     historyContainer.classList.add('fade-out');
 
-    // Wait for the fade-out to complete
     setTimeout(() => {
-        // Clear the container after the fade-out
         historyContainer.innerHTML = '';
-        historyContainer.classList.remove('fade-out'); // Remove fade-out to reset the style
+        historyContainer.classList.remove('fade-out');
 
-        // Now, add new content with a fade-in animation
         guessHistory.forEach(guess => {
             const guessDiv = document.createElement('div');
-            guessDiv.className = 'guess-history-entry'; // Assign class for styling and animation
+            guessDiv.className = 'guess-history-entry';
             guessDiv.innerHTML = `
                 <h4>${guess.title}</h4>
                 <p style="background-color:${guess.colors.year}">${guess.feedback.year}</p>
@@ -114,7 +125,7 @@ function displayGuessHistory() {
             `;
             historyContainer.appendChild(guessDiv);
         });
-    }, 250); // This delay should match the fade-out transition time
+    }, 250);
 }
 
 document.getElementById('guessButton').addEventListener('click', function() {
@@ -124,12 +135,12 @@ document.getElementById('guessButton').addEventListener('click', function() {
         return;
     }
 
-    document.getElementById('gameMessage').textContent = "";  // Clear previous messages
-    const userInput = document.getElementById('guessInput').value.trim().toLowerCase();  // Normalize input
+    document.getElementById('gameMessage').textContent = "";
+    const userInput = document.getElementById('guessInput').value.trim().toLowerCase();
     const movie = movies.find(movie => movie['Movie Title'].toLowerCase() === userInput);
 
     if (movie) {
-        if (!checkGuessLimit()) return;  // Check if the guess limit has been reached before processing the guess
+        if (!checkGuessLimit()) return;
 
         displayMovieDetails(movie);
         updateFeedback(movie);
@@ -141,23 +152,24 @@ document.getElementById('guessButton').addEventListener('click', function() {
             recordVictory();
             playSound(soundVictory);
         } else {
-            let guesses = parseInt(getCookie('guesses')) || 0;
-            if (guesses > 10) {  // Check if this guess was the 10th
+            let guesses = parseInt(getCookie('guesses')) || 1;
+            if (guesses > 10) {
                 updateGameMessage("Game Over! The movie was " + selectedMovie['Movie Title'] + ". Come back tomorrow and try again!");
                 disableGuessing();
+                recordLose();
             }
         }
     } else {
         document.getElementById('gameMessage').textContent = "Invalid Movie Title!";
     }
-    document.getElementById('guessInput').value = '';  // Clear the input field after processing the guess
-    hideSuggestions();  // Hide suggestions after a guess is made
+    document.getElementById('guessInput').value = '';
+    hideSuggestions();
 });
 
 function hideSuggestions() {
     const suggestionsBox = document.getElementById('suggestions');
-    suggestionsBox.innerHTML = '';  // Clear suggestions content
-    suggestionsBox.style.display = 'none';  // Hide suggestions box
+    suggestionsBox.innerHTML = '';
+    suggestionsBox.style.display = 'none';
 }
 
 function checkGuess(guess) {
@@ -171,28 +183,32 @@ function checkGuess(guess) {
 
 function checkGuessLimit() {
     let cookieName = isCustomGame ? 'customGame_guesses' : 'guesses';
-    let guesses = parseInt(getCookie(cookieName)) || 0;
-    if (guesses >= 10) {
+    let guesses = parseInt(getCookie(cookieName)) || 1;
+    console.log("Guess amount: " + guesses)
+    if (guesses > 10 || alreadyLost && !isCustomGame) {
         updateGameMessage("Game Over! You have reached your guessing limit for today.");
         disableGuessing();
         return false;
     } else {
         guesses++;
-        setCookie(cookieName, guesses, 1); // Save the updated count in a cookie.
+        setCookie(cookieName, guesses, 1);
         document.getElementById('guessCount').textContent = `Guess: ${guesses}/10`;
+        console.log("Guess amount: " + guesses)
         return true;
     }
 }
 
 function checkGuessLimitOnLoad() {
     let cookieName = isCustomGame ? 'customGame_guesses' : 'guesses';
-    let guesses = parseInt(getCookie(cookieName)) || 0;
-    if (guesses >= 10) {
+    let guesses = parseInt(getCookie(cookieName)) || 1;
+    if (!isCustomGame && guesses > 10 || alreadyLost && !isCustomGame) {
         updateGameMessage('Game Over! You have reached your guessing limit for today. Come back tomorrow and play again!');
         disableGuessing();
-        document.getElementById('guessCount').textContent = `Guess: ${guesses}/10`; // Show max guesses reached
+        document.getElementById('guessCount').textContent = `Guess: ${guesses}/10`;
         return false;
     }
+
+    console.log("Guess amount: " + guesses)
 }
 
 function disableGuessing() {
@@ -228,8 +244,15 @@ function recordVictory() {
     victoryModal.style.animation = 'slideUpFadeIn 2.0s ease-out forwards';
 }
 
+function recordLose() {
+    if (!isCustomGame)
+        {
+            setCookie('lastLoseDay', dayOfYearToday, 1);
+        }
+}
+
 function closeVictoryModal() {
-    document.getElementById('victoryContainer').style.display = 'none'; // Hide the victory modal
+    document.getElementById('victoryContainer').style.display = 'none';
 }
 
 // function to check and display victories
@@ -250,25 +273,24 @@ document.getElementById('guessInput').addEventListener('input', function() {
 
 function displaySuggestions(input) {
     const suggestionsBox = document.getElementById('suggestions');
-    suggestionsBox.innerHTML = ''; // Clear previous suggestions
-    suggestionsBox.style.display = 'none'; // Initially hide the suggestions box
+    suggestionsBox.innerHTML = '';
+    suggestionsBox.style.display = 'none';
 
     if (input.length >= 2) {
         const filteredMovies = movies.filter(movie => movie['Movie Title'].toLowerCase().includes(input.toLowerCase()));
-        console.log('Filtered movies:', filteredMovies);  // Check what is filtered
+        console.log('Filtered movies:', filteredMovies);
 
         if (filteredMovies.length > 0) {
-            // Only take up to 5 filtered movies to display as suggestions
             filteredMovies.slice(0, 5).forEach(movie => {
                 const div = document.createElement('div');
                 div.textContent = movie['Movie Title'];
                 div.onclick = () => {
                     document.getElementById('guessInput').value = movie['Movie Title'];
-                    suggestionsBox.style.display = 'none'; // Hide after selection
+                    suggestionsBox.style.display = 'none';
                 };
                 suggestionsBox.appendChild(div);
             });
-            suggestionsBox.style.display = 'block'; // Show suggestions
+            suggestionsBox.style.display = 'block';
         }
     }
 }
@@ -333,7 +355,7 @@ function updateFeedback(guess) {
         playSound(soundCorrect);
         console.log("Sound correct");
     }
-    else if (year_status == 1 || duration_status == 1 || correctGenresCount <= 2)
+    else if (year_status == 1 || duration_status == 1 || correctGenresCount > 0)
     {
         playSound(soundPartial);
         console.log("Sound partial");
@@ -363,7 +385,7 @@ function updateVictoryCountDisplay() {
 function checkAndClearData() 
 {
     clearLocalStorageExceptLastResetTime();
-    const cookiesToDelete = ['guesses', 'lastVictoryDay'];
+    const cookiesToDelete = ['guesses', 'lastVictoryDay', 'lastLoseDay'];
     document.cookie.split(';').forEach(cookie => {
         let [name, value] = cookie.split('=');
         name = name.trim();
@@ -423,9 +445,10 @@ window.onload = function() {
             }
             
             loadMovies();
-            updateGuessCountDisplay();
+            checkIfAlreadyLostToday();
             displayGuessHistory();
             checkGuessLimitOnLoad();
+            updateGuessCountDisplay();
             updateVictoryCountDisplay();
             checkIfAlreadyWonToday();
             updateShareLinks();

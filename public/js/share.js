@@ -1,7 +1,7 @@
 // share.js
 function showVictoryModal() {
     let guessCount = parseInt(getCookie('guesses'));
-    guessCount = Math.max(0, guessCount - 1); // Ensure it doesn't go below 0
+    guessCount = Math.max(1, guessCount - 1);
     document.getElementById('guessCountDisplay').textContent = `${guessCount} ${guessCount === 1 ? 'guess' : 'guesses'}!`;
     updateShareLinks(guessCount);
     document.getElementById('victoryContainer').style.display = 'block';
@@ -15,14 +15,12 @@ function updateShareLinks(guessCount) {
 
 function handleGenericShare() {
     let guessCount = parseInt(getCookie('guesses'));
-    guessCount = Math.max(0, guessCount - 1);
+    guessCount = Math.max(1, guessCount - 1);
     const guessText = guessCount === 1 ? 'guess' : 'guesses';
     const message = `I beat today's screenle in ${guessCount} ${guessText}! Try to beat my score: ${document.location.href}`;
 
-    // Retrieve the button element for later use
     const shareButton = document.getElementById('genericShareButton');
 
-    // Check if the device is mobile using User-Agent Client Hints API
     const isMobile = navigator.userAgentData && navigator.userAgentData.mobile;
 
     if (isMobile && navigator.share) {
@@ -37,7 +35,6 @@ function handleGenericShare() {
             }, 2000);
         }).catch(console.error);
     } else {
-        // Copy the message to the clipboard for non-mobile devices
         navigator.clipboard.writeText(message).then(() => {
             shareButton.textContent = 'Copied!';
             setTimeout(() => {
@@ -68,25 +65,23 @@ function share_custom_game() {
 
     const encodedTitle = encodeMovieTitle(movie['Movie Title']);
     const customLink = generateCustomGameLink(encodedTitle);
-    const message = `Try to guess the movie: ${customLink}`;
+    const message = `I made a custom screenle game for you! Try it here: ${customLink}`;
     shareLink(message);
 }
 
 function shareLink(message) {
-    // Check if the device is mobile using User-Agent Client Hints API
     const isMobile = navigator.userAgentData && navigator.userAgentData.mobile;
 
     if (isMobile && navigator.share) {
         navigator.share({
             title: 'Play screenle - Custom Game',
             text: message,
-            url: message  // Here we share the URL itself as the text in mobile sharing
+            url: message
         }).then(() => console.log('Share was successful.'))
           .catch(console.error);
     } else {
-        // For non-mobile devices, we mimic clipboard copying behavior
         navigator.clipboard.writeText(message).then(() => {
-            alert('Link copied to clipboard!');
+            // alert('Link copied to clipboard!');
         }).catch(err => {
             console.error('Failed to copy link to clipboard: ', err);
             alert('Failed to copy link to clipboard.');
