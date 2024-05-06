@@ -132,6 +132,13 @@ document.getElementById('guessButton').addEventListener('click', function() {
 
     if (isCustomGameCreationMode) {
         share_custom_game();
+        const linkMessageElement = document.getElementById('guessButton');
+        linkMessageElement.textContent = "LINK COPIED!";
+        
+        // Clear the message after 2 seconds
+        setTimeout(() => {
+            linkMessageElement.textContent = "CREATE LINK";
+        }, 2000);
         return;
     }
 
