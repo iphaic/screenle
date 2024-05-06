@@ -69,7 +69,7 @@ function displayCustomGameLink(link) {
 function clearData() 
 {
     clearLocalStorageExceptLastResetTime();
-    const cookiesToDelete = ['guesses'];
+    const cookiesToDelete = ['customGame_guesses'];
     document.cookie.split(';').forEach(cookie => {
         let [name, value] = cookie.split('=');
         name = name.trim();
