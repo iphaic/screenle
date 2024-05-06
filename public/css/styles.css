@@ -13,6 +13,8 @@
 body, html {
     margin: 0;
     padding-bottom: 50px;
+    padding-right: 50px;
+    padding-left: 50px;
     font-family: 'Lato', sans-serif;
     width: 100vw;
     height: 100vh;
@@ -137,12 +139,12 @@ main {
     position: fixed;
     top: 10px;
     right: 10px;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 1);
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 0.8em;
     color: #333;
-    z-index: 200;
+    z-index: 300;
 }
 
 .info-box {
@@ -198,7 +200,7 @@ footer {
 /* guess history styles */
 .guess-history {
     position: absolute;
-    top: 70vh;
+    top: 80vh;
     width: 90%;
     max-width: 600px;
     max-height: 200vh;
@@ -260,6 +262,7 @@ footer {
     padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 300;
 }
 
 .how-to-play-btn:hover {
@@ -270,9 +273,9 @@ footer {
     display: block;
     position: fixed;
     top: 50%;
-    left: 50.325%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: 100%;
+    width: 90%;
     max-width: 700px;
     background-color: rgb(49, 49, 49);
     color: rgb(224, 224, 224);
@@ -283,6 +286,14 @@ footer {
     visibility: hidden;
     transition: opacity 0.5s, visibility 0.5s;
     font-size: 20px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+    .how-to-play-container {
+        font-size: 14px; /* Smaller font size for very small devices */
+        padding: 5px; /* Reduce padding to save space */
+    }
 }
 
 .how-to-play-content h4 + p {
@@ -331,6 +342,7 @@ footer {
     padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 300;
 }
 
 @keyframes slideUpFadeIn {
@@ -438,6 +450,7 @@ footer {
     padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 300;
 }
 
 .custom-game-btn:hover {
