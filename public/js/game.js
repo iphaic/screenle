@@ -4,6 +4,17 @@ let selectedMovie;
 let today = new Date();
 let dayOfYearToday = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
 
+const soundCorrect = new Audio('sounds/correct.mp3');
+const soundPartial = new Audio('sounds/partial.mp3');
+const soundWrong = new Audio('sounds/wrong.mp3');
+const soundVictory = new Audio('sounds/victory.mp3');
+
+function playSound(sound) {
+    if (getCookie('soundEnabled') === 'true') {
+        sound.play();
+    }
+}
+
 const COLOR_CORRECT = 'rgba(0, 173, 43, 1)';
 const COLOR_PARTIAL = 'rgba(243, 156, 18, 1)';
 const COLOR_WRONG = 'rgba(63, 71, 82, 1)';
@@ -14,8 +25,6 @@ function loadMovies() {
         .then(data => {
             movies = data.movies;
             selectedMovie = data.selectedMovie;
-            console.log('User Movies loaded:', movies);
-            console.log('User Selected movie:', selectedMovie);
 
             if (selectedMovie) {
                 document.getElementById('devSelectedMovie').textContent = `Dev: ${selectedMovie['Movie Title']}`;
@@ -72,20 +81,33 @@ function storeGuessHistory(guess) {
 }
 
 function displayGuessHistory() {
-    let guessHistory = JSON.parse(localStorage.getItem('guessHistory') || '[]');
     const historyContainer = document.getElementById('guessHistoryContainer');
-    historyContainer.innerHTML = '';
+    let guessHistory = JSON.parse(localStorage.getItem('guessHistory') || '[]');
 
-    guessHistory.forEach(guess => {
-        const guessDiv = document.createElement('div');
-        guessDiv.innerHTML = `<h4>${guess.title}</h4>
-                              <p style="background-color:${guess.colors.year}">${guess.feedback.year}</p>
-                              <p style="background-color:${guess.colors.genre}">${guess.feedback.genre}</p>
-                              <p style="background-color:${guess.colors.director}">${guess.feedback.director}</p>
-                              <p style="background-color:${guess.colors.certificate}">${guess.feedback.certificate}</p>
-                              <p style="background-color:${guess.colors.duration}">${guess.feedback.duration}</p>`;
-        historyContainer.append(guessDiv);
-    });
+    // First, fade out the existing content
+    historyContainer.classList.add('fade-out');
+
+    // Wait for the fade-out to complete
+    setTimeout(() => {
+        // Clear the container after the fade-out
+        historyContainer.innerHTML = '';
+        historyContainer.classList.remove('fade-out'); // Remove fade-out to reset the style
+
+        // Now, add new content with a fade-in animation
+        guessHistory.forEach(guess => {
+            const guessDiv = document.createElement('div');
+            guessDiv.className = 'guess-history-entry'; // Assign class for styling and animation
+            guessDiv.innerHTML = `
+                <h4>${guess.title}</h4>
+                <p style="background-color:${guess.colors.year}">${guess.feedback.year}</p>
+                <p style="background-color:${guess.colors.genre}">${guess.feedback.genre}</p>
+                <p style="background-color:${guess.colors.director}">${guess.feedback.director}</p>
+                <p style="background-color:${guess.colors.certificate}">${guess.feedback.certificate}</p>
+                <p style="background-color:${guess.colors.duration}">${guess.feedback.duration}</p>
+            `;
+            historyContainer.appendChild(guessDiv);
+        });
+    }, 250); // This delay should match the fade-out transition time
 }
 
 document.getElementById('guessButton').addEventListener('click', function() {
@@ -104,6 +126,7 @@ document.getElementById('guessButton').addEventListener('click', function() {
         if (movie['Movie Title'].toLowerCase() === selectedMovie['Movie Title'].toLowerCase()) {
             document.getElementById('gameMessage').textContent = `You got it! ${movie['Movie Title']}.`;
             recordVictory();
+            playSound(soundVictory);
         } else {
             let guesses = parseInt(getCookie('guesses')) || 0;
             if (guesses > 10) {  // Check if this guess was the 10th
@@ -159,10 +182,16 @@ function checkGuessLimitOnLoad() {
 function disableGuessing() {
     document.getElementById('guessInput').disabled = true;
     document.getElementById('guessButton').disabled = true;
-    document.getElementById('gameMessage').textContent += " The movie was: " + selectedMovie['Movie Title'] + ". Come back tomorrow and play again!";
+    document.getElementById('gameMessage').textContent += "Come back tomorrow and play again!";
 }
 
 function recordVictory() {
+    confetti({
+        particleCount: 200,
+        startVelocity: 50,
+        spread: 270,
+        shapes: ['square','square','star']
+      });
     incrementVictories();
     setCookie('lastVictoryDay', dayOfYearToday, 1);
     updateVictoryCountDisplay();
@@ -219,26 +248,29 @@ function displayMovieDetails(movie) {
     document.getElementById('durationFeedback').textContent = `Duration: ${movie['Duration']} min`;
 }
 
+// i hate this function
 function updateFeedback(guess) {
     const yearDifference = selectedMovie['Year of Release'] - guess['Year of Release'];
     const durationDifference = selectedMovie['Duration'] - guess['Duration'];
 
     // year
     document.getElementById('yearFeedback').style.backgroundColor = yearDifference === 0 ? COLOR_CORRECT : Math.abs(yearDifference) <= 5 ? COLOR_PARTIAL : COLOR_WRONG;
+    let year_status = yearDifference === 0 ? 2 : Math.abs(yearDifference) <= 5 ? 1 : 0;
     document.getElementById('yearFeedback').textContent = `Year: ${guess['Year of Release']} ${yearDifference === 0 ? '' : (yearDifference > 0 ? '↑' : '↓')}`;
 
     // duration
     document.getElementById('durationFeedback').style.backgroundColor = durationDifference === 0 ? COLOR_CORRECT : Math.abs(durationDifference) <= 15 ? COLOR_PARTIAL : COLOR_WRONG;
+    let duration_status = durationDifference === 0 ? 2 : Math.abs(durationDifference) <= 15 ? 1 : 0;
     document.getElementById('durationFeedback').textContent = `Duration: ${guess['Duration']} min ${durationDifference === 0 ? '' : (durationDifference > 0 ? '↑' : '↓')}`;
 
-    // Update genre feedback with background color for correct genres
+    // genres
     const selectedGenres = selectedMovie['Genre'].split(',').map(genre => genre.trim().toLowerCase());
     const guessGenres = guess['Genre'].split(',').map(genre => genre.trim().toLowerCase());
     let genreFeedbackText = 'Genre: ';
-    let correctGenresCount = 0; // Track number of correct genres
+    let correctGenresCount = 0; // track number of correct genres
 
     guessGenres.forEach((genre, index) => {
-        const originalGenreText = guess['Genre'].split(',')[index].trim(); // Get the original text to maintain capitalization
+        const originalGenreText = guess['Genre'].split(',')[index].trim(); // get the original text to maintain capitalization
         if (selectedGenres.includes(genre)) {
             genreFeedbackText += `<span style="background-color:${COLOR_CORRECT};">${originalGenreText}</span>`;
             correctGenresCount++;
@@ -249,17 +281,36 @@ function updateFeedback(guess) {
     });
 
     document.getElementById('genreFeedback').innerHTML = genreFeedbackText;
-    // Adjust the background color based on the number of correct genres
+    // adjust the background color based on the number of correct genres
     if (correctGenresCount === guessGenres.length) {
-        document.getElementById('genreFeedback').style.backgroundColor = COLOR_CORRECT;  // All genres are correct
+        document.getElementById('genreFeedback').style.backgroundColor = COLOR_CORRECT;  // all genres are correct
     } else if (correctGenresCount > 0) {
-        document.getElementById('genreFeedback').style.backgroundColor = COLOR_PARTIAL;  // Some but not all genres are correct
+        document.getElementById('genreFeedback').style.backgroundColor = COLOR_PARTIAL;  // some but not all genres are correct
     } else {
-        document.getElementById('genreFeedback').style.backgroundColor = COLOR_WRONG;  // No genres are correct
+        document.getElementById('genreFeedback').style.backgroundColor = COLOR_WRONG;  // no genres are correct
     }
 
     document.getElementById('directorFeedback').style.backgroundColor = selectedMovie['Director'] === guess['Director'] ? COLOR_CORRECT : COLOR_WRONG;
+    let director_status = selectedMovie['Director'] === guess['Director'] ? 1 : 0;
     document.getElementById('certificateFeedback').style.backgroundColor = selectedMovie['Certificate'] === guess['Certificate'] ? COLOR_CORRECT : COLOR_WRONG;
+    let certificate_status = selectedMovie['Certificate'] === guess['Certificate'] ? 1 : 0;
+
+    if (year_status == 2 || duration_status == 2 || correctGenresCount >= 2 || director_status == 1 || certificate_status == 1)
+    {
+        playSound(soundCorrect);
+        console.log("Sound correct");
+    }
+    else if (year_status == 1 || duration_status == 1 || correctGenresCount <= 2)
+    {
+        playSound(soundPartial);
+        console.log("Sound partial");
+    }
+    else
+    {
+        playSound(soundWrong);
+        console.log("Sound wrong");
+    }
+
 }
 
 function gameOver() {
@@ -290,15 +341,21 @@ function checkAndClearData()
 }
 
 window.onload = function() {
+    console.log("Window loaded successfully.");
     fetch('/api/last-reset-time')
         .then(response => response.json())
         .then(data => {
             const serverResetTime = new Date(data.lastReset);
             const lastClientResetTime = new Date(localStorage.getItem('lastResetTime'));
 
+            console.log("Server reset time:", serverResetTime);
+            console.log("Last client reset time:", lastClientResetTime);
+
             if (!lastClientResetTime || serverResetTime > lastClientResetTime) {
-                checkAndClearData()
-                localStorage.setItem('lastResetTime', serverResetTime.toISOString());  // Update last reset time locally
+                console.log("Clearing data due to reset.");
+                window.location.reload();
+                checkAndClearData();
+                localStorage.setItem('lastResetTime', serverResetTime.toISOString());
             }
 
             loadMovies();

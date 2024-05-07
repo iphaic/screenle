@@ -1,3 +1,15 @@
+@keyframes gradientBG {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
 /* General Body Styles */
 body, html {
     margin: 0;
@@ -8,11 +20,13 @@ body, html {
     min-height: 100%;
     display: flex;
     overflow-x: hidden;
-    flex-direction: column; /* Changed to column to stack items vertically */
-    align-items: center; /* Centers items horizontally */
-    justify-content: center; /* Center the content vertically */
-    background: linear-gradient(to right, #602366, #b33e3e);
-    color: #fff; /* White text for better visibility on dark background */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1d5253, #412255, #602366, #09c5d3);
+    background-size: 800% 800%;
+    animation: gradientBG 60s ease infinite;
+    color: #fff;
     overflow-y: auto;
 }
 
@@ -27,12 +41,33 @@ body, html {
     border-radius: 20px; /* Rounded corners */
 }
 
+@keyframes gradient-scroll {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+
 /* Header styles */
 header h1 {
-    color: #09c5d3; /* A bright accent color */
+    color: #fff; /* Ensures the text is visible on the gradient */
     font-family: Verdana, Geneva, sans-serif;
     font-size: 48px;
     font-weight: bold;
+    background: linear-gradient(to right, #09c5d3, #602366, #b33e3e, #09c5d3);
+    background-size: 1500% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-scroll 5s linear infinite;
+}
+
+header {
+    display: block; /* Makes the header a block-level element */
+    width: 100%; /* Ensures it stretches across the screen */
+    text-align: center; /* Centers the text */
 }
 
 /* Main section styles */
@@ -144,6 +179,7 @@ main {
 
 .suggestions div:hover {
     background-color: #2c3e50;
+    border-radius: 15px;
 }
 
 .game-message {
@@ -177,6 +213,33 @@ footer {
     margin-top: 15px;  /* Space between each history entry */
 }
 
+@keyframes slideFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+}
+
+/* Fade-in animation for each guess history entry */
+.guess-history-entry {
+    opacity: 0; /* Start fully transparent */
+    animation: slideFadeIn 1s ease-in-out forwards; /* 'forwards' keeps the state at the end of the animation */
+}
+
+/* Active class to trigger animation */
+.guess-history-entry.active {
+    opacity: 1; /* Fully visible */
+}
+
 .info-box {
     display: inline-block;
     margin-right: 5px;
@@ -208,7 +271,7 @@ footer {
     transform: translate(-50%, -50%);
     width: 100%;
     max-width: 600px;
-    background: linear-gradient(to right, #9135ad, #592a8f);
+    background: linear-gradient(to right, #5b216d, #331852);
     color: white;
     padding: 10px;
     border-radius: 10px;
@@ -229,4 +292,16 @@ footer {
 
 .close-btn:hover {
     color: #e74c3c;
+}
+
+.toggle-sound-btn {
+    position: fixed;
+    top: 50px;
+    left: 10px; /* Adjust based on your layout */
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
 }
