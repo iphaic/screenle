@@ -5,12 +5,32 @@ function setupCustomGameButton() {
     const customGameButton = document.getElementById('createCustomGameButton');
     customGameButton.addEventListener('click', function() {
         isCustomGameCreationMode = !isCustomGameCreationMode;
+
+        if(isCustomGame)
+        {
+            redirectToBaseURL();
+            return;
+        }
+
         if (isCustomGameCreationMode) {
             prepareCustomGameUI();
         } else {
-            window.location.reload();
+            redirectToBaseURL();
         }
     });
+}
+
+function removeQueryString(url) {
+    // Split the URL at the '?' and return the first part
+    return url.split('?')[0];
+}
+
+function redirectToBaseURL() {
+    // Remove the query string from the current URL
+    var baseUrl = removeQueryString(window.location.href);
+
+    // Use the base URL for redirection or other purposes
+    window.location.href = baseUrl;
 }
 
 function prepareCustomGameUI() {
@@ -101,6 +121,7 @@ function checkForCustomGame() {
                 document.getElementById('guessInput').disabled = false;
                 document.getElementById('guessButton').disabled = false;
                 updateGameMessage(`Custom Game Loaded. Good Luck!`);
+                updateCreateCustomButton('Back');
 
             } else {
                 console.log("Movie not found for custom game:", decodedMovieTitle);
@@ -110,6 +131,15 @@ function checkForCustomGame() {
         }
     } else {
         console.log("No custom game parameter found.");
+    }
+}
+
+function updateCreateCustomButton(message) {
+    const createCustomGameButton = document.getElementById('createCustomGameButton');
+    if (createCustomGameButton) {
+        createCustomGameButton.textContent = message;
+    } else {
+        console.error("createCustomGameButton element not found!");
     }
 }
 
