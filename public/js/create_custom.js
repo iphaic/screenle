@@ -116,12 +116,12 @@ function checkForCustomGame() {
                 
                 isCustomGame = true;
                 clearData();
-                updateGuessCountDisplay();
                 displayGuessHistory();
                 document.getElementById('guessInput').disabled = false;
                 document.getElementById('guessButton').disabled = false;
                 updateGameMessage(`Custom Game Loaded. Good Luck!`);
                 updateCreateCustomButton('Back');
+                updateGuessCountDisplay();
 
             } else {
                 console.log("Movie not found for custom game:", decodedMovieTitle);

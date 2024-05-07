@@ -1,6 +1,14 @@
 // share.js
 function showVictoryModal() {
-    let guessCount = parseInt(getCookie('guesses'));
+    let guessCount;
+    if (!isCustomGame)
+    {
+        guessCount = parseInt(getCookie('guesses'));
+    }
+    else if (isCustomGame)
+    {
+        guessCount = parseInt(getCookie('customGame_guesses'));
+    }
     guessCount = Math.max(1, guessCount - 1);
     document.getElementById('guessCountDisplay').textContent = `${guessCount} ${guessCount === 1 ? 'guess' : 'guesses'}!`;
     updateShareLinks(guessCount);

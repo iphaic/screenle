@@ -72,7 +72,15 @@ function checkIfAlreadyLostToday() {
 }
 
 function updateGuessCountDisplay() {
-    let guesses = parseInt(getCookie('guesses')) || 1;
+    let guesses;
+    if (!isCustomGame)
+    {
+        guesses = parseInt(getCookie('guesses')) || 1;
+    }
+    else if (isCustomGame)
+    {
+        guesses = parseInt(getCookie('customGame_guesses')) || 1;
+    }
     document.getElementById('guessCount').textContent = `Guess: ${guesses}/10`;
 }
 
