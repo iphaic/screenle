@@ -22,10 +22,18 @@ function updateShareLinks(guessCount) {
 }
 
 function handleGenericShare() {
-    let guessCount = parseInt(getCookie('guesses'));
+    let guessCount;
+    if (!isCustomGame)
+    {
+        guessCount = parseInt(getCookie('guesses'));
+    }
+    else if (isCustomGame)
+    {
+        guessCount = parseInt(getCookie('customGame_guesses'));
+    }
     guessCount = Math.max(1, guessCount - 1);
     const guessText = guessCount === 1 ? 'guess' : 'guesses';
-    const message = `I beat today's screenle in ${guessCount} ${guessText}! Try to beat my score: ${document.location.href}`;
+    const message = `I beat the screenle in ${guessCount} ${guessText}! Try to beat my score: ${document.location.href}`;
 
     const shareButton = document.getElementById('genericShareButton');
 
