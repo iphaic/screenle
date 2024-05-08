@@ -63,6 +63,7 @@ header h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: gradient-scroll 5s linear infinite;
+    text-shadow: rgb(255, 255, 255, 0.2) 0 0 10px;
 }
 
 header {
@@ -488,4 +489,31 @@ footer {
 
 #customGameContainer a:hover {
     text-decoration: underline;
+}
+
+.snowflake {
+    position: fixed;
+    top: -10px;
+    z-index: 0;
+    color: #fff;
+    opacity: 0.8;
+    font-size: 1em; /* Adjust size */
+    animation-name: fallRotate;
+    animation-duration: 15s; /* Adjust for speed */
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes fallRotate {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
 }

@@ -8,6 +8,31 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const serverGame = require('./server_game.js');
 
+// Define the path for the log file
+const logFilePath = path.join(__dirname, 'logs', 'app.log');
+
+// Ensure the logs directory exists
+if (!fs.existsSync(path.join(__dirname, 'logs'))) {
+    fs.mkdirSync(path.join(__dirname, 'logs'));
+}
+
+// Create a write stream for logging
+const logStream = fs.createWriteStream(logFilePath, { flags: 'w' });
+
+// Redefine console.log and console.error to write to the log file
+const originalConsoleLog = console.log;
+const originalConsoleError = console.error;
+
+console.log = function(message) {
+    logStream.write(new Date().toISOString() + " [LOG] " + message + '\n');
+    originalConsoleLog.apply(console, arguments);
+};
+
+console.error = function(message) {
+    logStream.write(new Date().toISOString() + " [ERROR] " + message + '\n');
+    originalConsoleError.apply(console, arguments);
+};
+
 app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use(cookieParser());
 
@@ -47,7 +72,7 @@ cron.schedule('0 0 * * *', () => {
     resetGame();  // Reset the game
 }, {
     scheduled: true,
-    timezone: "America/New_York"
+    timezone: "America/Los_Angeles"
 });
 
 function resetGame() {

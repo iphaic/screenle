@@ -18,8 +18,7 @@ function setMovies(data) {
 
 function selectMovieOfDay() {
     let today = new Date();
-    // Add 3 hours to convert from PST to EST
-    today.setHours(today.getHours() + 3);
+    today.setHours(today.getHours() + -3);
     // Create a seed string from the current date
     let seed = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
 
@@ -29,7 +28,7 @@ function selectMovieOfDay() {
         // Use the pseudo-random number modulo the number of movies to select a movie
         const index = Math.floor(rng() * movies.length);
         selectedMovie = movies[index];
-        console.log(`Movie of the day selected with seed '${seed}': \x1b[36m${selectedMovie['Movie Title'] || 'No title found'}\x1b[0m - ${today.toLocaleString()}`);
+        console.log(`Movie of the day selected with seed '${seed}': ${selectedMovie['Movie Title'] || 'No title found'} - ${today.toLocaleString()}`);
     } else {
         console.log('No movies to select');
     }
