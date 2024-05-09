@@ -353,7 +353,6 @@ window.onload = function() {
 
             if (!lastClientResetTime || serverResetTime > lastClientResetTime) {
                 console.log("Clearing data due to reset.");
-                window.location.reload();
                 checkAndClearData();
                 localStorage.setItem('lastResetTime', serverResetTime.toISOString());
             }
