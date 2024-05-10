@@ -81,6 +81,10 @@ function updateGuessCountDisplay() {
     {
         guesses = parseInt(getCookie('customGame_guesses')) || 1;
     }
+    if (guesses >= 10) 
+    {
+        guesses = 10;
+    }
     document.getElementById('guessCount').textContent = `Guess: ${guesses}/10`;
 }
 
@@ -91,7 +95,7 @@ function storeGuessHistory(guess) {
         feedback: {
             year: document.getElementById('yearFeedback').textContent,
             genre: document.getElementById('genreFeedback').innerHTML,
-            director: document.getElementById('directorFeedback').textContent,
+            director: document.getElementById('directorFeedback').innerHTML,
             certificate: document.getElementById('certificateFeedback').textContent,
             duration: document.getElementById('durationFeedback').textContent,
         },
@@ -199,16 +203,24 @@ function checkGuess(guess) {
 function checkGuessLimit() {
     let cookieName = isCustomGame ? 'customGame_guesses' : 'guesses';
     let guesses = parseInt(getCookie(cookieName)) || 1;
-    console.log("Guess amount: " + guesses)
-    if (guesses > 10 || alreadyLost && !isCustomGame) {
+    console.log("Old guess amount: " + guesses)
+    if (guesses > 10 || alreadyLost && !isCustomGame) 
+    {
         updateGameMessage("Game Over! You have reached your guessing limit for today.");
         disableGuessing();
         return false;
-    } else {
+    }
+    else 
+    {
         guesses++;
         setCookie(cookieName, guesses, 1);
         document.getElementById('guessCount').textContent = `Guess: ${guesses}/10`;
-        console.log("Guess amount: " + guesses)
+        console.log("New guess amount: " + guesses)
+        if (isCustomGame && guesses > 10)
+        {
+            updateGameMessage("Game Over! The movie was: " + selectedMovie['Movie Title']);
+            disableGuessing();
+        }
         return true;
     }
 }
@@ -282,7 +294,6 @@ function checkVictory() {
 // check input
 document.getElementById('guessInput').addEventListener('input', function() {
     const input = this.value;
-    console.log('Input received:', input);  // log inputs
     displaySuggestions(input);
 });
 
@@ -293,7 +304,6 @@ function displaySuggestions(input) {
 
     if (input.length >= 2) {
         const filteredMovies = movies.filter(movie => movie['Movie Title'].toLowerCase().includes(input.toLowerCase()));
-        console.log('Filtered movies:', filteredMovies);
 
         if (filteredMovies.length > 0) {
             filteredMovies.slice(0, 5).forEach(movie => {
@@ -313,25 +323,37 @@ function displaySuggestions(input) {
 function displayMovieDetails(movie) {
     document.getElementById('yearFeedback').textContent = `Year: ${movie['Year of Release']}`;
     document.getElementById('genreFeedback').textContent = `Genre: ${movie['Genre']}`;
-    document.getElementById('directorFeedback').textContent = `Director: ${movie['Director']}`;
+    document.getElementById('directorFeedback').textContent = `Director(s): ${movie['Director']}`;
     document.getElementById('certificateFeedback').textContent = `Age Rating: ${movie['Certificate']}`;
-    document.getElementById('durationFeedback').textContent = `Duration: ${movie['Duration']} min`;
+    document.getElementById('durationFeedback').textContent = `Duration: ${movie['Duration']}`;
+}
+
+function durationToMinutes(duration) {
+    const parts = duration.match(/(\d+)h (\d+)min/);
+    if (!parts) return 0;
+    const hours = parseInt(parts[1], 10);
+    const minutes = parseInt(parts[2], 10);
+    return hours * 60 + minutes;
 }
 
 // i hate this function
 function updateFeedback(guess) {
     const yearDifference = selectedMovie['Year of Release'] - guess['Year of Release'];
-    const durationDifference = selectedMovie['Duration'] - guess['Duration'];
 
-    // year
+    // Calculate duration differences
+    const selectedDurationMinutes = durationToMinutes(selectedMovie['Duration']);
+    const guessDurationMinutes = durationToMinutes(guess['Duration']);
+    const durationDifference = selectedDurationMinutes - guessDurationMinutes;
+
+    // year feedback
     document.getElementById('yearFeedback').style.backgroundColor = yearDifference === 0 ? COLOR_CORRECT : Math.abs(yearDifference) <= 5 ? COLOR_PARTIAL : COLOR_WRONG;
     let year_status = yearDifference === 0 ? 2 : Math.abs(yearDifference) <= 5 ? 1 : 0;
     document.getElementById('yearFeedback').textContent = `Year: ${guess['Year of Release']} ${yearDifference === 0 ? '' : (yearDifference > 0 ? '↑' : '↓')}`;
 
-    // duration
+    // duration feedback
     document.getElementById('durationFeedback').style.backgroundColor = durationDifference === 0 ? COLOR_CORRECT : Math.abs(durationDifference) <= 15 ? COLOR_PARTIAL : COLOR_WRONG;
     let duration_status = durationDifference === 0 ? 2 : Math.abs(durationDifference) <= 15 ? 1 : 0;
-    document.getElementById('durationFeedback').textContent = `Duration: ${guess['Duration']} min ${durationDifference === 0 ? '' : (durationDifference > 0 ? '↑' : '↓')}`;
+    document.getElementById('durationFeedback').textContent = `Duration: ${guess['Duration']} ${durationDifference === 0 ? '' : (durationDifference > 0 ? '↑' : '↓')}`;
 
     // genres
     const selectedGenres = selectedMovie['Genre'].split(',').map(genre => genre.trim().toLowerCase());
@@ -351,7 +373,6 @@ function updateFeedback(guess) {
     });
 
     document.getElementById('genreFeedback').innerHTML = genreFeedbackText;
-    // adjust the background color based on the number of correct genres
     if (correctGenresCount === guessGenres.length) {
         document.getElementById('genreFeedback').style.backgroundColor = COLOR_CORRECT;  // all genres are correct
     } else if (correctGenresCount > 0) {
@@ -360,17 +381,42 @@ function updateFeedback(guess) {
         document.getElementById('genreFeedback').style.backgroundColor = COLOR_WRONG;  // no genres are correct
     }
 
-    document.getElementById('directorFeedback').style.backgroundColor = selectedMovie['Director'] === guess['Director'] ? COLOR_CORRECT : COLOR_WRONG;
-    let director_status = selectedMovie['Director'] === guess['Director'] ? 1 : 0;
+    // directors
+    const selectedDirectors = selectedMovie['Director'].split(',').map(director => director.trim().toLowerCase());
+    const guessDirectors = guess['Director'].split(',').map(director => director.trim().toLowerCase());
+    let directorFeedbackText = 'Director(s): ';
+    let correctDirectorsCount = 0;
+
+    guessDirectors.forEach((director, index) => {
+        const originalDirectorText = guess['Director'].split(',')[index].trim();
+        if (selectedDirectors.includes(director)) {
+            directorFeedbackText += `<span style="background-color:${COLOR_CORRECT};">${originalDirectorText}</span>`;
+            correctDirectorsCount++;
+        } else {
+            directorFeedbackText += originalDirectorText;
+        }
+        if (index < guessDirectors.length - 1) directorFeedbackText += ', ';
+    });
+
+    document.getElementById('directorFeedback').innerHTML = directorFeedbackText;
+    if (correctDirectorsCount === guessDirectors.length) {
+        document.getElementById('directorFeedback').style.backgroundColor = COLOR_CORRECT;  // all director are correct
+    } else if (correctDirectorsCount > 0) {
+        document.getElementById('directorFeedback').style.backgroundColor = COLOR_PARTIAL;  // some but not all director are correct
+    } else {
+        document.getElementById('directorFeedback').style.backgroundColor = COLOR_WRONG;  // no director are correct
+    }
+
+    // certificate
     document.getElementById('certificateFeedback').style.backgroundColor = selectedMovie['Certificate'] === guess['Certificate'] ? COLOR_CORRECT : COLOR_WRONG;
     let certificate_status = selectedMovie['Certificate'] === guess['Certificate'] ? 1 : 0;
 
-    if (year_status == 2 || duration_status == 2 || correctGenresCount >= 2 || director_status == 1 || certificate_status == 1)
+    if (year_status == 2 || duration_status == 2 || correctGenresCount >= 2 || correctDirectorsCount >= 1 || certificate_status == 1)
     {
         playSound(soundCorrect);
         console.log("Sound correct");
     }
-    else if (year_status == 1 || duration_status == 1 || correctGenresCount > 0)
+    else if (year_status == 1 || duration_status == 1 || correctGenresCount > 0 || correctDirectorsCount != 0)
     {
         playSound(soundPartial);
         console.log("Sound partial");

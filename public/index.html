@@ -10,6 +10,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <meta name="theme-color" content="#2F2F2F" />
 </head>
 <body>
     <div id="snow-container"></div>
@@ -17,7 +18,7 @@
         <div class="how-to-play-content">
             <button id="closeHowToPlay" class="close-btn">×</button>
             <h2>How to Play</h2>
-            <p>Your goal is to guess the mystery movie chosen from the current top 1000 highest grossing movies within 10 tries. A new movie is selected every 24 hours</p>
+            <p>Your goal is to guess the mystery movie chosen from the current top 1000+ highest grossing movies within 10 tries. A new movie is selected every 24 hours</p>
             <h3>Guessing</h3>
             <p>When you submit a guess, you will notice you get some feedback. This will show you what matches the mystery movie from your guess</p>
             <h3>Feedback System</h3>
@@ -27,9 +28,9 @@
             <p>This will highlight in <span class="highlight-orange">ORANGE</span> if at least 1 of the genres match with the mystery movie. Any genres that match exactly will highlight in <span class="highlight-green">GREEN</span>.</p>
             <p>The available genres are: Action, Adventure, Animation, Fantasy, Drama, Romance, Sci-Fi, Thriller, Horror, Crime, Comedy, History, Family, Musical, Mystery, Western, Documentary, and Sport</p>
             <h4>Director</h4>
-            <p>This will highlight in <span class="highlight-green">GREEN</span> if it matches. Some films have several directors, this will just be displayed as "Multiple Directors"</p>
+            <p>This will highlight in <span class="highlight-orange">ORANGE</span> if at least 1 of the directors match. Any directors that match exactly will highlight in <span class="highlight-green">GREEN</span></p>
             <h4>Age Rating</h4>
-            <p>This will highlight in <span class="highlight-green">GREEN</span> if it matches. The available age ratings are: PG, PG-13, R, TV-MA, Passed, and Not Rated</p>
+            <p>This will highlight in <span class="highlight-green">GREEN</span> if it matches. The available age ratings are: G, PG, PG-13, R, TV-MA, Passed, Approved, and Not Rated</p>
             <h4>Duration</h4>
             <p>This will highlight in <span class="highlight-orange">ORANGE</span> if it is within 15 minutes of the mystery movie's duration</p>
         </div>
@@ -65,12 +66,12 @@
         </div>
     </div>
     <div class="container">
-        <div id="devSelectedMovie" class="dev-info">v0.1.2</div>
+        <div id="devSelectedMovie" class="dev-info">v1.0.0</div>
         <div id="timerDisplay" class="timer-info"><span id="timeLeft"></span></div>
         <button id="howToPlayButton" class="how-to-play-btn">How to Play</button>
         <button id="toggleSound" class="toggle-sound-btn">Sound Enabled</button>
         <button id="createCustomGameButton" class="custom-game-btn">Create Custom Game</button>
-        <div id="guessCount" class="guess-count">Guess: num/10</div>
+        <div id="guessCount" class="guess-count">Guess: loading/10</div>
         <div id="victoryCount" class="victory-count">Victories: 0</div>
         <header>
             <h1>screenle.lol</h1>
