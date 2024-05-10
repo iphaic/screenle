@@ -38,7 +38,7 @@ function prepareCustomGameUI() {
     document.getElementById('howToPlayContainer').style.display = 'none';
 
     document.getElementById('gameMessage').textContent = "Select a movie for your friend to guess!";
-    document.getElementById('guessButton').textContent = "CREATE LINK";
+    document.getElementById('guessButton').textContent = "CREATE/COPY LINK";
     document.getElementById('guessButton').onclick = createCustomGameLink;
     document.getElementById('guessInput').placeholder = "Enter movie title for custom game";
 

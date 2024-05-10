@@ -149,7 +149,7 @@ document.getElementById('guessButton').addEventListener('click', function() {
         
         // Clear the message after 2 seconds
         setTimeout(() => {
-            linkMessageElement.textContent = "CREATE LINK";
+            linkMessageElement.textContent = "CREATE/COPY LINK";
         }, 2000);
         return;
     }
