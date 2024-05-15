@@ -124,4 +124,7 @@ Nightcrawler,2014,1h 57min,R,"Crime, Drama, Thriller",Dan Gilroy
 The Terminator,1984,1h 47min,R,"Action, Adventure, Sci-Fi",James Cameron
 Groundhog Day,1993,1h 41min,PG,"Comedy, Drama, Fantasy",Harold Ramis
 RRR,2022,3h 7min,PG-13,"Action, Adventure, Drama",S.S. Rajamouli
+2001: A Space Odyssey,1968,2h 29min,G,"Adventure, Sci-Fi",Stanley Kubrick
+Mean Girls,2004,1h 37min,PG-13,"Comedy, Drama",Mark Waters
+Deadpool & Wolverine,2024,2h 10min,R,"Action, Comedy, Sci-Fi",Shawn Levy
 '''

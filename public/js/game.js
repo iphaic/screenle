@@ -2,7 +2,19 @@
 let movies = [];
 let selectedMovie;
 let today = new Date();
-let dayOfYearToday = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+let todayEST = new Date(today.toLocaleString("en-US", { timeZone: "America/New_York" }));
+
+// Adjust the calculation for day of the year
+let startOfYearEST = new Date(todayEST.getFullYear(), 0, 0);
+let diff = todayEST - startOfYearEST;
+let oneDay = 1000 * 60 * 60 * 24;
+let dayOfYearToday = Math.floor(diff / oneDay);
+
+// Check if we are past 9 PM EST and adjust day of the year if needed
+let hourEST = todayEST.getHours();
+if (hourEST >= 21) {
+    dayOfYearToday += 1;
+}
 
 const soundCorrect = new Audio('sounds/correct.mp3');
 const soundPartial = new Audio('sounds/partial.mp3');
@@ -109,7 +121,6 @@ function storeGuessHistory(guess) {
     });
 
     localStorage.setItem('guessHistory', JSON.stringify(guessHistory));
-    console.log('Stored guess history:', guessHistory);
 }
 
 function displayGuessHistory() {
@@ -414,17 +425,14 @@ function updateFeedback(guess) {
     if (year_status == 2 || duration_status == 2 || correctGenresCount >= 2 || correctDirectorsCount >= 1 || certificate_status == 1)
     {
         playSound(soundCorrect);
-        console.log("Sound correct");
     }
     else if (year_status == 1 || duration_status == 1 || correctGenresCount > 0 || correctDirectorsCount != 0)
     {
         playSound(soundPartial);
-        console.log("Sound partial");
     }
     else
     {
         playSound(soundWrong);
-        console.log("Sound wrong");
     }
 
 }
@@ -488,16 +496,14 @@ window.onload = function() {
     console.log("Window loaded successfully.");
         fetch('/api/last-reset-time')
         .then(response => {
-            console.log("Response received");
             return response.json();
         })
         .then(data => {
-            console.log("Data parsed", data)
+            console.log("Data parsed", data);
             const serverResetTime = new Date(data.lastReset);
             const lastClientResetTime = new Date(localStorage.getItem('lastResetTime'));
-
-            console.log("Server reset time:", serverResetTime);
-            console.log("Last client reset time:", lastClientResetTime);
+            console.log("Server reset time:", serverResetTime.toISOString());
+            console.log("Last client reset time:", lastClientResetTime.toISOString());
 
             if (!lastClientResetTime || serverResetTime > lastClientResetTime) {
                 console.log("Clearing data due to reset.");

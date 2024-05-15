@@ -1,12 +1,9 @@
 // share.js
 function showVictoryModal() {
     let guessCount;
-    if (!isCustomGame)
-    {
+    if (!isCustomGame) {
         guessCount = parseInt(getCookie('guesses'));
-    }
-    else if (isCustomGame)
-    {
+    } else if (isCustomGame) {
         guessCount = parseInt(getCookie('customGame_guesses'));
     }
     guessCount = Math.max(1, guessCount - 1);
@@ -23,35 +20,34 @@ function updateShareLinks(guessCount) {
 
 function handleGenericShare() {
     let guessCount;
-    if (!isCustomGame)
-    {
+    if (!isCustomGame) {
         guessCount = parseInt(getCookie('guesses'));
-    }
-    else if (isCustomGame)
-    {
+    } else if (isCustomGame) {
         guessCount = parseInt(getCookie('customGame_guesses'));
     }
     guessCount = Math.max(1, guessCount - 1);
     const guessText = guessCount === 1 ? 'guess' : 'guesses';
-    const message = `I beat the screenle in ${guessCount} ${guessText}! Try to beat my score: ${document.location.href}`;
+    const message = `I beat the screenle in ${guessCount} ${guessText}! Try to beat my score.`;
+    const url = document.location.href;
 
     const shareButton = document.getElementById('genericShareButton');
 
-    const isMobile = navigator.userAgentData && navigator.userAgentData.mobile;
+    // Detect if the user is on a mobile device
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
     if (isMobile && navigator.share) {
         navigator.share({
-            title: 'play screenle',
+            title: 'Play screenle',
             text: message,
-            url: document.location.href
+            url: url
         }).then(() => {
-            shareButton.textContent = 'Copied!';
+            shareButton.textContent = 'Shared!';
             setTimeout(() => {
                 shareButton.innerHTML = '<img src="images/copy.png" alt="Copy Link">';
             }, 2000);
         }).catch(console.error);
     } else {
-        navigator.clipboard.writeText(message).then(() => {
+        navigator.clipboard.writeText(`${message} ${url}`).then(() => {
             shareButton.textContent = 'Copied!';
             setTimeout(() => {
                 shareButton.innerHTML = '<img src="images/copy.png" alt="Copy Link">';
@@ -81,22 +77,22 @@ function share_custom_game() {
 
     const encodedTitle = encodeMovieTitle(movie['Movie Title']);
     const customLink = generateCustomGameLink(encodedTitle);
-    const message = `I made a custom screenle game for you! Try it here: ${customLink}`;
-    shareLink(message);
+    const message = `I made a custom screenle game for you! Try it here:`;
+    shareLink(message, customLink);
 }
 
-function shareLink(message) {
-    const isMobile = navigator.userAgentData && navigator.userAgentData.mobile;
+function shareLink(message, url) {
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
     if (isMobile && navigator.share) {
         navigator.share({
             title: 'Play screenle - Custom Game',
             text: message,
-            url: message
+            url: url
         }).then(() => console.log('Share was successful.'))
           .catch(console.error);
     } else {
-        navigator.clipboard.writeText(message).then(() => {
+        navigator.clipboard.writeText(`${message} ${url}`).then(() => {
             // alert('Link copied to clipboard!');
         }).catch(err => {
             console.error('Failed to copy link to clipboard: ', err);

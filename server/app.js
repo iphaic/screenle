@@ -72,7 +72,7 @@ cron.schedule('0 0 * * *', () => {
     resetGame();  // Reset the game
 }, {
     scheduled: true,
-    timezone: "America/Los_Angeles"
+    timezone: "America/New_York"
 });
 
 function resetGame() {
@@ -100,10 +100,8 @@ function initializeResetTime() {
     if (!fs.existsSync(resetTimePath)) {
         const resetTime = new Date();
         fs.writeFileSync(resetTimePath, JSON.stringify({ lastReset: resetTime }));
-        console.log('\x1b[36m%s\x1b[0m','Initial reset time set at:', resetTime.toISOString());
     } else {
         const storedResetData = JSON.parse(fs.readFileSync(resetTimePath, 'utf8'));
-        console.log('\x1b[36m%s\x1b[0m','Existing reset time found:', storedResetData.lastReset);
     }
 }
 

@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (timeDifference <= 0) {
                 timeLeftDisplay.textContent = 'Resetting...';
+                console.log("Resetting... time difference: " + timeDifference);
                 return;
             }
 
