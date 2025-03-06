@@ -340,10 +340,14 @@ function displayMovieDetails(movie) {
 }
 
 function durationToMinutes(duration) {
-    const parts = duration.match(/(\d+)h (\d+)min/);
-    if (!parts) return 0;
-    const hours = parseInt(parts[1], 10);
-    const minutes = parseInt(parts[2], 10);
+    let hours = 0, minutes = 0;
+    
+    let hourMatch = duration.match(/(\d+)h/);
+    if (hourMatch) hours = parseInt(hourMatch[1], 10);
+
+    let minuteMatch = duration.match(/(\d+)min/);
+    if (minuteMatch) minutes = parseInt(minuteMatch[1], 10);
+
     return hours * 60 + minutes;
 }
 
