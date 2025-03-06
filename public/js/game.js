@@ -345,7 +345,7 @@ function durationToMinutes(duration) {
     let hourMatch = duration.match(/(\d+)h/);
     if (hourMatch) hours = parseInt(hourMatch[1], 10);
 
-    let minuteMatch = duration.match(/(\d+)m/);
+    let minuteMatch = duration.match(/(\d+)min/);
     if (minuteMatch) minutes = parseInt(minuteMatch[1], 10);
 
     return hours * 60 + minutes;
